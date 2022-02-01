@@ -36,3 +36,5 @@ tools/bin2h
 os/linux/Makefile
 os/linux/Module.symvers
 os/linux/modules.order
+os/linux/.mt7601Uap.mod*
+os/linux/mt7601Uap.mod
