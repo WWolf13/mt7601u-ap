@@ -425,9 +425,7 @@ NDIS_STATUS RtmpAsicLoadFirmware(
 			UINT16 sum;
 
 			NdisCopyMemory(&sum, &FirmwareImage[FIRMWAREIMAGEV3_LENGTH+0xFFE], 2);
-#ifdef DBG
-			printk("%s: ver %x/%x, sum %x/%x, mac %x\n", __FUNCTION__, FVer, ver, FCS, sum, MacReg1);
-#endif /* DBG */
+			DBGPRINT(RT_DEBUG_OFF, ("%s: ver %x/%x, sum %x/%x, mac %x\n", __FUNCTION__, FVer, ver, FCS, sum, MacReg1));
 			if ( FVer != ver || FCS != sum )
 				Equal = FALSE;
 		}
@@ -438,9 +436,7 @@ NDIS_STATUS RtmpAsicLoadFirmware(
 			UINT16 sum;
 
 			NdisCopyMemory(&sum, &FirmwareImage[FIRMWAREIMAGEV2_LENGTH+0xFFE], 2);
-#ifdef DBG
-			printk("%s: ver %x/%x, sum %x/%x, mac %x\n", __FUNCTION__, FVer, ver, FCS, sum, MacReg1);
-#endif /* DBG */
+			DBGPRINT(RT_DEBUG_OFF, ("%s: ver %x/%x, sum %x/%x, mac %x\n", __FUNCTION__, FVer, ver, FCS, sum, MacReg1));
 			if ( FVer != ver || FCS != sum )
 				Equal = FALSE;
 		}	
