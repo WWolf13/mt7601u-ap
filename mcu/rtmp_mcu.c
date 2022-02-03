@@ -30,13 +30,13 @@
 
 INT MCUBurstWrite(PRTMP_ADAPTER pAd, UINT32 Offset, UINT32 *Data, UINT32 Cnt)
 {
-	return RTUSBMultiWrite_nBytes(pAd, Offset, Data, Cnt * 4, 64);
+	return RTUSBMultiWrite_nBytes(pAd, Offset, (PUCHAR)Data, Cnt * 4, 64);
 }
 
 INT MCURandomWrite(PRTMP_ADAPTER pAd, RTMP_REG_PAIR *RegPair, UINT32 Num)
 {
 	UINT32 Index;
-	
+
 	for (Index = 0; Index < Num; Index++)
 		RTMP_IO_WRITE32(pAd, RegPair->Register, RegPair->Value);
   return 0;
@@ -48,7 +48,7 @@ VOID ChipOpsMCUHook(PRTMP_ADAPTER pAd, enum MCU_TYPE MCUType)
 	RTMP_CHIP_OP *pChipOps = &pAd->chipOps;
 
 
-	if (MCUType == M8051) 
+	if (MCUType == M8051)
 	{
 		pChipOps->sendCommandToMcu = RtmpAsicSendCommandToMcu;
 		pChipOps->BurstWrite = MCUBurstWrite;
@@ -56,7 +56,7 @@ VOID ChipOpsMCUHook(PRTMP_ADAPTER pAd, enum MCU_TYPE MCUType)
 	}
 
 #ifdef CONFIG_ANDES_SUPPORT
-	if (MCUType == ANDES) 
+	if (MCUType == ANDES)
 	{
 
 #ifdef RTMP_USB_SUPPORT
@@ -70,8 +70,8 @@ VOID ChipOpsMCUHook(PRTMP_ADAPTER pAd, enum MCU_TYPE MCUType)
 		pChipOps->RFRandomRead = AndesRFRandomRead;
 		pChipOps->ReadModifyWrite = AndesReadModifyWrite;
 		pChipOps->RFReadModifyWrite = AndesRFReadModifyWrite;
-		pChipOps->RandomWrite = AndesRandomWrite;
-		pChipOps->RFRandomWrite = AndesRFRandomWrite;
+		pChipOps->RandomWrite = AndesRandomWritePair; //pChipOps->RandomWrite = AndesRandomWrite;
+		pChipOps->RFRandomWrite = AndesRFRandomWritePair; //pChipOps->RFRandomWrite = AndesRFRandomWrite;
 		pChipOps->PwrSavingOP = AndesPwrSavingOP;
 	}
 #endif

@@ -95,7 +95,7 @@
 #endif
 #define NUM_OF_LOCAL_TXBUF      2
 #define TXD_SIZE		16	/* TXD_SIZE = TxD + TxInfo */
-#define RXD_SIZE		16	
+#define RXD_SIZE		16
 
 #define RXINFO_OFFSET	12
 
@@ -1565,11 +1565,11 @@ enum WIFI_MODE{
 /* The signal threshold (RSSI) over new rate adaption */
 #define SIGNAL_THRESHOLD_OVER_NEW_RATE_ADAPT	-65
 
-/* After Linux 2.6.9, 
- * VLAN module use Private (from user) interface flags (netdevice->priv_flags). 
- * #define IFF_802_1Q_VLAN 0x1         --    802.1Q VLAN device.  in if.h     
+/* After Linux 2.6.9,
+ * VLAN module use Private (from user) interface flags (netdevice->priv_flags).
+ * #define IFF_802_1Q_VLAN 0x1         --    802.1Q VLAN device.  in if.h
  * ref to ip_sabotage_out() [ out->priv_flags & IFF_802_1Q_VLAN ] in br_netfilter.c
- * 
+ *
  * For this reason, we MUST use EVEN value in priv_flags
  */
 #define INT_MAIN			0x0100
@@ -1589,9 +1589,9 @@ enum WIFI_MODE{
 
 
 #define IS_ENTRY_NONE(_x)		((_x)->EntryType == ENTRY_NONE)
-#define IS_ENTRY_CLIENT(_x)		((_x)->EntryType == ENTRY_CLIENT)
+#define IS_ENTRY_CLIENT(_x)	((_x)->EntryType == ENTRY_CLIENT)
 #define IS_ENTRY_WDS(_x)		((_x)->EntryType == ENTRY_WDS)
-#define IS_ENTRY_APCLI(_x)		((_x)->EntryType == ENTRY_APCLI)
+#define IS_ENTRY_APCLI(_x)	((_x)->EntryType == ENTRY_APCLI)
 #define IS_ENTRY_MESH(_x)		((_x)->EntryType == ENTRY_MESH)
 #define IS_ENTRY_DLS(_x)		((_x)->EntryType == ENTRY_DLS)
 #define IS_ENTRY_TDLS(_x)		((_x)->EntryType == ENTRY_TDLS)

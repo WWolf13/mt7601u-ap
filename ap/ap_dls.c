@@ -13,9 +13,9 @@
  ***************************************************************************/
 
 /****************************************************************************
- 
+
     Abstract:
- 
+
     Handle WMM-DLS state machine.
 
 ***************************************************************************/
@@ -33,24 +33,24 @@ Routine Description:
 Arguments:
     pAd				points to our adapter
     S				pointer to the DLS state machine
-	Trans[]			
+	Trans[]
 
 Return Value:
     None
 
     Note:
-        The state machine looks like the following 
+        The state machine looks like the following
 
-                                    DLS_IDLE             
-        MT2_PEER_DLS_REQ			PeerDlsReqAction 
-        MT2_PEER_DLS_RSP			PeerDlsRspAction     
+                                    DLS_IDLE
+        MT2_PEER_DLS_REQ			PeerDlsReqAction
+        MT2_PEER_DLS_RSP			PeerDlsRspAction
         MT2_PEER_DLS_TEAR_DOWN		PeerDlsTearDownAction
 ========================================================================
  */
 VOID APDLSStateMachineInit(
-    IN	PRTMP_ADAPTER		pAd, 
-    IN  STATE_MACHINE		*S, 
-    OUT STATE_MACHINE_FUNC	Trans[]) 
+    IN	PRTMP_ADAPTER		pAd,
+    IN  STATE_MACHINE		*S,
+    OUT STATE_MACHINE_FUNC	Trans[])
 {
     StateMachineInit(S, (STATE_MACHINE_FUNC*)Trans, MAX_DLS_STATE, MAX_DLS_MSG,
 					(STATE_MACHINE_FUNC)Drop, DLS_IDLE, DLS_MACHINE_BASE);
@@ -307,11 +307,11 @@ VOID APPeerDlsTearDownAction(
 			SA[0], SA[1], SA[2], SA[3], SA[4], SA[5]));
 
 	pSAEntry = MacTableLookup(pAd, SA);
-    if (!pSAEntry)
-    	return;
+  if(NULL == pSAEntry)
+    return;
 
 	pDAEntry = MacTableLookup(pAd, DA);
-	if (!pDAEntry)
+	if(NULL == pDAEntry)
 	{
 		DBGPRINT(RT_DEBUG_TRACE, ("Destination station does not exist!\n"));
 		return;

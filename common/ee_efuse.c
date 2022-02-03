@@ -1461,7 +1461,9 @@ int rtmp_ee_efuse_write16(
         NdisMoveMemory(&(pAd->EEPROMImage[Offset]), &data, 2);
     }
     else
+    {
         eFuseWrite(pAd,Offset ,&data, 2);
+    }
 	return 0;
 }
 

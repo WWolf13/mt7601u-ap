@@ -150,7 +150,7 @@ $(MOD_NAME)-objs += \
 	../../common/wsc_ufd.o
 endif
 #endif // WSC_INCLUDE //
-	
+
 ifeq ($(HAS_ATE),y)
 $(MOD_NAME)-objs += ../../ate/common/rt_ate.o
 endif
@@ -205,7 +205,7 @@ $(MOD_NAME)-objs += \
 endif
 #endif // LED_CONTROL_SUPPORT //
 
-ifeq ($(HAS_RT2880_RT2860_COEXIST),y)	
+ifeq ($(HAS_RT2880_RT2860_COEXIST),y)
 RT28XX_AP_OBJ += \
 	../../os/linux/rt_pci_rbus.o \
 	../../os/linux/rt_rbus_pci_util.o \
@@ -563,9 +563,14 @@ PHONY := clean install uninstall
 
 clean:
 	@rm -f ../../common/*.o
+	@rm -f ../../mac/*.o
+	@rm -f ../../mcu/*.o
+	@rm -f ../../mgmt/*.o
+	@rm -f ../../phy/*.o
+	@rm -f ../../rate_ctrl/*.o
 	@rm -f ../../common/.*.{cmd,flags,d}
-	@rm -f ../../os/linux/*.{o,ko,mod.{o,c}}
-	@rm -f ../../os/linux/.*.{cmd,flags,d}
+	@rm -f ../../os/linux/*.o *.ko *.mod.o *.mod.c
+	@rm -f ../../os/linux/*.{cmd,flags,d}
 	@rm -fr ../../os/linux/.tmp_versions
 #Must clean Module.symvers; or you will suffer symbol version not match
 #when OS_ABL = YES.

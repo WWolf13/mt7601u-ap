@@ -138,7 +138,7 @@ UCHAR get_cent_ch_by_htinfo(
 
 	Arguments:
 		pAd - Pointer to our adapter
-		phymode  - 
+		phymode  -
 
 	========================================================================
 */
@@ -239,17 +239,17 @@ VOID RTMPSetHT(
 		rt_ht_cap->GF = 0;
 
 	/* Decide Rx MCSSet*/
+	ht_cap->MCSSet[0] =  0xff;
 	switch (RxStream)
 	{
 		case 3:
-			ht_cap->MCSSet[2] =  0xff;
+		  ht_cap->MCSSet[2] =  0xff;
+      ht_cap->MCSSet[1] =  0xff;
+      break;
 		case 2:
-			ht_cap->MCSSet[1] =  0xff;
-		case 1:
-		default:
-			ht_cap->MCSSet[0] =  0xff;
-			break;
-	}
+		  ht_cap->MCSSet[1] =  0xff;
+		  break;
+  }
 
 	if (pAd->CommonCfg.bForty_Mhz_Intolerant)
 	{
@@ -539,7 +539,7 @@ VOID RTMPSetIndividualHT(
 	*/
 	if (pAd->CommonCfg.HT_DisallowTKIP && IS_INVALID_HT_SECURITY(encrypt_mode))
 	{
-		DBGPRINT(RT_DEBUG_WARN, ("%s : Use legacy rate in WEP/TKIP encryption mode (apidx=%d)\n", 
+		DBGPRINT(RT_DEBUG_WARN, ("%s : Use legacy rate in WEP/TKIP encryption mode (apidx=%d)\n",
 						__FUNCTION__, apidx));
 		return;
 	}

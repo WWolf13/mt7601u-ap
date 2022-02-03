@@ -375,9 +375,9 @@ NDIS_STATUS RTMPAllocateNdisPacket(
 
 	/* Clone the frame content and update the length of packet */
 	if (HeaderLen > 0)
-		NdisMoveMemory(pPacket->data, pHeader, HeaderLen);
+		NdisMoveMemory( pPacket->data, pHeader, HeaderLen);
 	if (DataLen > 0)
-		NdisMoveMemory(pPacket->data + HeaderLen, pData, DataLen);
+		NdisMoveMemory( pPacket->data + HeaderLen, pData, DataLen);
 	skb_put(pPacket, HeaderLen + DataLen);
 /* printk(KERN_ERR "%s : pPacket = %p, len = %d\n", __FUNCTION__, pPacket, GET_OS_PKT_LEN(pPacket));*/
 
@@ -439,14 +439,14 @@ void RTMP_QueryPacketInfo(
 	if (RTMP_GET_PKT_SG(pPacket)) {
 		struct sk_buff *skb = (struct sk_buff *)pPacket;
 		int i, nr_frags = skb_shinfo(skb)->nr_frags;
-		
+
 		info->BufferCount =  nr_frags + 1;
 		info->PhysicalBufferCount = info->BufferCount;
 		info->sg_list[0].data = (VOID *)GET_OS_PKT_DATAPTR(pPacket);
 		info->sg_list[0].len = skb_headlen(skb);
 		for (i = 0; i < nr_frags; i++) {
 			skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
-			
+
 			info->sg_list[i+1].data = ((void *) page_address(frag->page) +
 									frag->page_offset);
 			info->sg_list[i+1].len = frag->size;
@@ -499,9 +499,9 @@ PNDIS_PACKET duplicate_pkt(
 		MEM_DBG_PKT_ALLOC_INC(skb);
 
 		skb_reserve(skb, 2);
-		NdisMoveMemory(skb->tail, pHeader802_3, HdrLen);
+		SET_OS_PKT_DATATAIL(skb, HdrLen); //NdisMoveMemory( &skb->tail, pHeader802_3, HdrLen);
 		skb_put(skb, HdrLen);
-		NdisMoveMemory(skb->tail, pData, DataSize);
+		SET_OS_PKT_DATATAIL(skb, HdrLen); //NdisMoveMemory( &skb->tail, pData, DataSize);
 		skb_put(skb, DataSize);
 		skb->dev = pNetDev;	/*get_netdev_from_bssid(pAd, FromWhichBSSID); */
 		pPacket = OSPKT_TO_RTPKT(skb);
@@ -564,12 +564,12 @@ PNDIS_PACKET duplicate_pkt_with_VLAN(
 		/* copy header (maybe +VLAN tag) */
 		VLAN_Size = VLAN_8023_Header_Copy(VLAN_VID, VLAN_Priority,
 						  pHeader802_3, HdrLen,
-						  skb->tail, FromWhichBSSID,
+						  skb->data+skb->tail, FromWhichBSSID,
 						  TPID);
 		skb_put(skb, HdrLen + VLAN_Size);
 
 		/* copy data body */
-		NdisMoveMemory(skb->tail, pData, DataSize);
+		SET_OS_PKT_DATATAIL(skb, DataSize); //NdisMoveMemory(&skb->tail, pData, DataSize);
 		skb_put(skb, DataSize);
 		skb->dev = pNetDev;	/*get_netdev_from_bssid(pAd, FromWhichBSSID); */
 		pPacket = OSPKT_TO_RTPKT(skb);
@@ -691,7 +691,7 @@ PNDIS_PACKET ClonePacket(
 		pClonedPkt->dev = pRxPkt->dev;
 		pClonedPkt->data = pData;
 		pClonedPkt->len = DataSize;
-		pClonedPkt->tail = pClonedPkt->data + pClonedPkt->len;
+    SET_OS_PKT_DATATAIL(pClonedPkt, DataSize); //pClonedPkt->tail = pClonedPkt->data + pClonedPkt->len;
 		ASSERT(DataSize < 1530);
 	}
 	return pClonedPkt;
@@ -710,7 +710,7 @@ VOID RtmpOsPktInit(
 	SET_OS_PKT_NETDEV(pRxPkt, pNetDev);
 	SET_OS_PKT_DATAPTR(pRxPkt, pData);
 	SET_OS_PKT_LEN(pRxPkt, DataSize);
-	SET_OS_PKT_DATATAIL(pRxPkt, pData, DataSize);
+	SET_OS_PKT_DATATAIL(pRxPkt, DataSize);
 }
 
 
@@ -736,7 +736,7 @@ void wlan_802_11_to_802_3_packet(
 	pOSPkt->dev = pNetDev;
 	pOSPkt->data = pData;
 	pOSPkt->len = DataSize;
-	pOSPkt->tail = pOSPkt->data + pOSPkt->len;
+	SET_OS_PKT_DATATAIL(pOSPkt, DataSize); //pOSPkt->tail = pOSPkt->data + pOSPkt->len;
 
 	/* copy 802.3 header */
 #ifdef CONFIG_AP_SUPPORT
@@ -768,15 +768,13 @@ VOID RtmpOsSetPacket(
 	IN UCHAR *pData,
 	IN ULONG DataSize)
 {
-
 	struct sk_buff *pOSPkt;
-
 	pOSPkt = RTPKT_TO_OSPKT(pRxPacket);
 
 	pOSPkt->dev = pNetDev;
 	pOSPkt->data = pData;
 	pOSPkt->len = DataSize;
-	pOSPkt->tail = pOSPkt->data + pOSPkt->len;
+	SET_OS_PKT_DATATAIL(pOSPkt, DataSize); //pOSPkt->tail = pOSPkt->data + pOSPkt->len;
 }
 
 #endif /* HDR_TRANS_SUPPORT */
@@ -1449,9 +1447,9 @@ PNET_DEV RtmpOSNetDevGetByName(PNET_DEV pNetDev, PSTRING pDevName)
 void RtmpOSNetDeviceRefPut(PNET_DEV pNetDev)
 {
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,5,0)
-	/* 
-	   every time dev_get_by_name is called, and it has returned a valid struct 
-	   net_device*, dev_put should be called afterwards, because otherwise the 
+	/*
+	   every time dev_get_by_name is called, and it has returned a valid struct
+	   net_device*, dev_put should be called afterwards, because otherwise the
 	   machine hangs when the device is unregistered (since dev->refcnt > 1).
 	 */
 	if (pNetDev)
@@ -1555,7 +1553,7 @@ int RtmpOSNetDevAttach(
 		pNetDev->ethtool_ops = &RALINK_Ethtool_Ops;
 #endif
 
-		/* if you don't implement get_stats, just leave the callback function as NULL, a dummy 
+		/* if you don't implement get_stats, just leave the callback function as NULL, a dummy
 		   function will make kernel panic.
 		 */
 		if (pDevOpHook->get_stats)
@@ -1712,9 +1710,9 @@ UCHAR VLAN_8023_Header_Copy(
 		/* no VLAN tag is needed to insert */
 		memcpy(pData, pHeader802_3, HdrLen);
 	}
-	
+
 	return VLAN_Size;
-}				
+}
 #endif /* CONFIG_AP_SUPPORT */
 
 
@@ -2414,7 +2412,7 @@ VOID CFG80211OS_UnRegister(
 			Must unregister, or you will suffer problem when you change
 			regulatory domain by using iw.
 		*/
-		
+
 #ifdef RFKILL_HW_SUPPORT
 		wiphy_rfkill_stop_polling(pCfg80211_CB->pCfg80211_Wdev->wiphy);
 #endif /* RFKILL_HW_SUPPORT */
@@ -3480,7 +3478,7 @@ VOID RTMP_OS_Add_Timer(NDIS_MINIPORT_TIMER *pTimerOrg, ULONG timeout)
 
 		__RTMP_OS_Add_Timer(pTimer, timeout);
 	}
-} 
+}
 
 
 VOID RTMP_OS_Mod_Timer(NDIS_MINIPORT_TIMER *pTimerOrg, ULONG timeout)
@@ -4951,7 +4949,7 @@ PUCHAR RtmpOsPktHeadBufExtend(PNDIS_PACKET pNetPkt, UINT Len)
 /*
 ========================================================================
 Routine Description:
-	
+
 
 Arguments:
 	pPkt			- the packet

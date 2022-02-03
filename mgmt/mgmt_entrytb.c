@@ -44,7 +44,7 @@ MAC_TABLE_ENTRY *MacTableLookup(
 {
 	ULONG HashIdx;
 	MAC_TABLE_ENTRY *pEntry = NULL;
-	
+
 	HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
 	pEntry = pAd->MacTab.Hash[HashIdx];
 
@@ -70,18 +70,15 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 	IN BOOLEAN	CleanAll)
 {
 	UCHAR HashIdx;
-	int i, FirstWcid;
-	MAC_TABLE_ENTRY *pEntry = NULL, *pCurrEntry;
+	int i, FirstWcid=1;
+	MAC_TABLE_ENTRY *pEntry = NULL, *pCurrEntry = NULL;
 /*	USHORT	offset;*/
 /*	ULONG	addr;*/
 	BOOLEAN Cancelled;
 
 	/* if FULL, return*/
-	if (pAd->MacTab.Size >= MAX_LEN_OF_MAC_TABLE)
+	if( pAd->MacTab.Size >= MAX_LEN_OF_MAC_TABLE )
 		return NULL;
-
-		FirstWcid = 1;
-
 
 	/* allocate one MAC entry*/
 	NdisAcquireSpinLock(&pAd->MacTabLock);
@@ -211,7 +208,7 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 					{
 						pEntry->AuthMode = pAd->ApCfg.ApCliTab[pEntry->apidx].AuthMode;
 						pEntry->WepStatus = pAd->ApCfg.ApCliTab[pEntry->apidx].WepStatus;
-					
+
 						if (pEntry->AuthMode < Ndis802_11AuthModeWPA)
 						{
 							pEntry->WpaState = AS_NOTUSE;
@@ -231,7 +228,7 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 					{
 						pEntry->AuthMode = Ndis802_11AuthModeOpen;
 						pEntry->WepStatus = Ndis802_11EncryptionDisabled;
-					
+
 						pEntry->MatchWDSTabIdx = pEntry->apidx;
 						break;
 					}
@@ -242,7 +239,7 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 						pEntry->AuthMode = pAd->ApCfg.MBSSID[apidx].AuthMode;
 						pEntry->WepStatus = pAd->ApCfg.MBSSID[apidx].WepStatus;
 						pEntry->GroupKeyWepStatus = pAd->ApCfg.MBSSID[apidx].GroupKeyWepStatus;
-					
+
 						if (pEntry->AuthMode < Ndis802_11AuthModeWPA)
 							pEntry->WpaState = AS_NOTUSE;
 						else
@@ -458,15 +455,15 @@ BOOLEAN MacTableDeleteEntry(
 			if (IS_ENTRY_CLIENT(pEntry)
 			)
 			{
-#ifdef DOT1X_SUPPORT 
+#ifdef DOT1X_SUPPORT
 				INT		PmkCacheIdx = -1;
 #endif /* DOT1X_SUPPORT */
-			
+
 				RTMPReleaseTimer(&pEntry->RetryTimer, &Cancelled);
 
-#ifdef DOT1X_SUPPORT    
+#ifdef DOT1X_SUPPORT
 				/* Notify 802.1x daemon to clear this sta info*/
-				if (pEntry->AuthMode == Ndis802_11AuthModeWPA || 
+				if (pEntry->AuthMode == Ndis802_11AuthModeWPA ||
 					pEntry->AuthMode == Ndis802_11AuthModeWPA2 ||
 					pAd->ApCfg.MBSSID[pEntry->apidx].IEEE8021X)
 					DOT1X_InternalCmdAction(pAd, pEntry, DOT1X_DISCONNECT_ENTRY);
@@ -504,7 +501,7 @@ BOOLEAN MacTableDeleteEntry(
 			}
 #endif /* APCLI_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
-           
+
 			pPrevEntry = NULL;
 			pProbeEntry = pAd->MacTab.Hash[HashIdx];
 			ASSERT(pProbeEntry);
@@ -561,7 +558,7 @@ BOOLEAN MacTableDeleteEntry(
             	if (MAC_ADDR_EQUAL(pEntry->Addr, pWscControl->EntryAddr))
             	{
             		/*
-            			Some WPS Client will send dis-assoc close to WSC_DONE. 
+            			Some WPS Client will send dis-assoc close to WSC_DONE.
             			If AP misses WSC_DONE, WPS Client still sends dis-assoc to AP.
             			Do not cancel timer if WscState is WSC_STATE_WAIT_DONE.
             		*/
@@ -572,7 +569,7 @@ BOOLEAN MacTableDeleteEntry(
 	            	    pWscControl->EapolTimerRunning = FALSE;
 						pWscControl->EapMsgRunning = FALSE;
 						NdisZeroMemory(&(pWscControl->EntryAddr[0]), MAC_ADDR_LEN);
-					}            	    
+					}
             	}
             	pEntry->Receive_EapolStart_EapRspId = 0;
 				pEntry->bWscCapable = FALSE;
@@ -628,7 +625,7 @@ VOID MacTableReset(
 	IN  PRTMP_ADAPTER  pAd)
 {
 	int         i;
-	BOOLEAN     Cancelled;    
+	BOOLEAN     Cancelled;
 #ifdef CONFIG_AP_SUPPORT
 	PUCHAR      pOutBuffer = NULL;
 	NDIS_STATUS NStatus;
@@ -666,10 +663,10 @@ VOID MacTableReset(
 						/*NdisReleaseSpinLock(&pAd->MacTabLock);*/
 						return;
 					}
-					
+
 					Reason = REASON_NO_LONGER_VALID;
 					DBGPRINT(RT_DEBUG_WARN, ("Send DEAUTH - Reason = %d frame tO %02x:%02x:%02x:%02x:%02x:%02x \n",Reason, PRINT_MAC(pAd->MacTab.Content[i].Addr)));
-					MgtMacHeaderInit(pAd, &DeAuthHdr, SUBTYPE_DEAUTH, 0, pAd->MacTab.Content[i].Addr, 
+					MgtMacHeaderInit(pAd, &DeAuthHdr, SUBTYPE_DEAUTH, 0, pAd->MacTab.Content[i].Addr,
 										pAd->ApCfg.MBSSID[pAd->MacTab.Content[i].apidx].Bssid);
 			    	MakeOutgoingFrame(pOutBuffer,            &FrameLen,
 			    	                  sizeof(HEADER_802_11), &DeAuthHdr,
@@ -700,13 +697,13 @@ VOID MacTableReset(
 		{
 #ifdef WSC_AP_SUPPORT
 			BOOLEAN Cancelled;
-			
+
 	    	RTMPCancelTimer(&pAd->ApCfg.MBSSID[apidx].WscControl.EapolTimer, &Cancelled);
 	    	pAd->ApCfg.MBSSID[apidx].WscControl.EapolTimerRunning = FALSE;
 			NdisZeroMemory(pAd->ApCfg.MBSSID[apidx].WscControl.EntryAddr, MAC_ADDR_LEN);
 	    	pAd->ApCfg.MBSSID[apidx].WscControl.EapMsgRunning = FALSE;
 #endif /* WSC_AP_SUPPORT */
-			pAd->ApCfg.MBSSID[apidx].StaCount = 0; 
+			pAd->ApCfg.MBSSID[apidx].StaCount = 0;
 		}
 		DBGPRINT(RT_DEBUG_TRACE, ("McastPsQueue.Number %ld...\n",pAd->MacTab.McastPsQueue.Number));
 		if (pAd->MacTab.McastPsQueue.Number > 0)
