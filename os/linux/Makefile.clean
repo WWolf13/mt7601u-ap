@@ -1,4 +1,4 @@
-include $(RT28xx_DIR)/os/linux/config.mk
+include $(SRC_DIR)/os/linux/config.mk
 
 PHONY := clean install uninstall
 

@@ -1,4 +1,4 @@
-include $(RT28xx_DIR)/os/linux/config.mk
+include $(SRC_DIR)/os/linux/config.mk
 
 obj_wsc :=
 obj_vht :=
@@ -602,7 +602,7 @@ strip:
 
 install:
 	mkdir -p $(DAT_PATH)
-	cp $(RT28xx_DIR)/$(DAT_FILE_NAME) $(DAT_PATH)/
+	cp $(SRC_DIR)/$(DAT_FILE_NAME) $(DAT_PATH)/
 	install -m 644 -c $(MOD_NAME).ko $(LINUX_SRC_MODULE)/
 	depmod $(LINUX_VER)
 

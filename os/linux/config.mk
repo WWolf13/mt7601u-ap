@@ -187,7 +187,7 @@ WFLAGS += -DSYSTEM_LOG_SUPPORT -DRT28xx_MODE=$(RT28xx_MODE) -DCHIPSET=$(MODULE) 
 WFLAGS += -Wno-error=date-time
 WFLAGS += -Wno-error=incompatible-pointer-types
 #WFLAGS += -DFPGA_MODE
-WFLAGS += -I$(RT28xx_DIR)/include
+WFLAGS += -I$(SRC_DIR)/include
 
 ifeq ($(HAS_WIFI_P2P_CONCURRENT_FAST_SCAN),y)
 WFLAGS += -DWIFI_P2P_CONCURRENT_FAST_SCAN
@@ -245,7 +245,7 @@ endif
 ifeq ($(HAS_ATE),y)
 WFLAGS += -DRALINK_ATE
 WFLAGS += -DCONFIG_RT2880_ATE_CMD_NEW
-WFLAGS += -I$(RT28xx_DIR)/ate/include
+WFLAGS += -I$(SRC_DIR)/ate/include
 ifeq ($(HAS_QA_SUPPORT),y)
 WFLAGS += -DRALINK_QA
 endif
