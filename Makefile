@@ -24,6 +24,7 @@ all: build_tools $(TARGET)
 
 build_tools:
 	@$(MAKE) -C tools
+	@mkdir $(SRC_DIR)/include/mcu
 	$(SRC_DIR)/tools/bin2h
 
 LINUX:
