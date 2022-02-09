@@ -635,16 +635,13 @@ static NDIS_STATUS MATProto_IP_Init(
 
 static inline void IPintToIPstr(int ipint, char Ipstr[20], ULONG BufLen)
 {
-	 int temp = 0;
-	 
-	 temp = ipint & 0x000FF;
-	 snprintf(Ipstr, BufLen, "%d.", temp);
-	 temp = (ipint>>8) & 0x000FF;
-	 snprintf(Ipstr, BufLen, "%s%d.", Ipstr, temp);
-	 temp = (ipint>>16) & 0x000FF;
-	 snprintf(Ipstr, BufLen, "%s%d.", Ipstr, temp);
-	 temp = (ipint>>24) & 0x000FF;
-	 snprintf(Ipstr, BufLen, "%s%d", Ipstr, temp);
+  uint8_t bytes[4];
+	bytes[0] = ipint & 0xFF;
+	bytes[1] = (ipint>>8) & 0xFF;
+	bytes[2] = (ipint>>16) & 0xFF;
+	bytes[3] = (ipint>>24) & 0xFF;
+
+	snprintf(Ipstr, BufLen, "%d.%d.%d.%d", bytes[0], bytes[1], bytes[2], bytes[3]);
 }
 
 

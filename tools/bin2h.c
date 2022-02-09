@@ -45,6 +45,7 @@ int main(int argc ,char *argv[])
 
   outfile = fopen(outfname,"w");
   if(outfile == (FILE *) NULL) {
+	  fclose(infile);
     printf("Can't open write file %s\n", outfname);
     return -1;
   }

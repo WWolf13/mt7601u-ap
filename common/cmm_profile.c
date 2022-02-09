@@ -3644,9 +3644,9 @@ BOOLEAN RTMP_CardInfoRead(
 				("MC> Free = %d, Same = %d, NOUSE = %d\n",
 				card_free_id, card_same_mac_id, card_nouse_id));
 
-		if ((card_same_mac_id >= 0) &&
+		if( (card_same_mac_id >= 0) &&
 			((card_select_method == MC_SELECT_CARDID) ||
-			(card_select_method == MC_SELECT_CARDTYPE))) {
+			(card_select_method == MC_SELECT_CARDTYPE)) ) {
 			/* same MAC entry is found*/
 			card_match_id = card_same_mac_id;
 

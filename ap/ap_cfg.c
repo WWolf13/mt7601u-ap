@@ -7170,11 +7170,9 @@ VOID RTMPAPIoctlE2PROM(
 	memset(msg, 0x00, 4096);
 	memset(arg, 0x00, 256);		
 
-	if (
 #ifdef LINUX
-		(wrq->u.data.length > 1) /* If no parameter, dump all e2p. */
+	if(	(wrq->u.data.length > 1) ) /* If no parameter, dump all e2p. */
 #endif /* LINUX */
-		)
 	{
 		NdisMoveMemory(arg, wrq->u.data.pointer, (wrq->u.data.length > 255) ? 255 : wrq->u.data.length);
 		ptr = arg;
