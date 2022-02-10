@@ -3639,7 +3639,7 @@ INT RTMPAPQueryInformation(
 			pMbssStat->bcPktsTx=  pMbss->bcPktsTx;
 			pMbssStat->bcPktsRx=  pMbss->bcPktsRx;
 			wrq->u.data.length = sizeof(MBSS_STATISTICS);
-			copy_to_user(wrq->u.data.pointer, pMbssStat, wrq->u.data.length);
+			Status = copy_to_user(wrq->u.data.pointer, pMbssStat, wrq->u.data.length);
 			os_free_mem(pAd, pMbssStat);			
 		}
 		break;
@@ -7499,9 +7499,11 @@ VOID RTMPIoctlStatistics(
 	}
 #endif /* RTMP_EFUSE_SUPPORT */    
     /* Copy the information into the user buffer */
-    wrq->u.data.length = strlen(msg);
-    copy_to_user(wrq->u.data.pointer, msg, wrq->u.data.length);
-
+	wrq->u.data.length = strlen(msg);
+  if( copy_to_user(wrq->u.data.pointer, msg, wrq->u.data.length) )
+	{
+		DBGPRINT(RT_DEBUG_TRACE, ("%s: copy_to_user() fail\n", __FUNCTION__));
+	}
 	os_free_mem(NULL, msg);
 /*	kfree(msg); */
 
