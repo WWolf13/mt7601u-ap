@@ -50,7 +50,7 @@
 
 		if (HandRst != 0)
 		{
-			/* pass the packet to upper layer */
+			// pass the packet to upper layer 
 			skb->protocol = eth_type_trans(skb, skb->dev);
 			netif_rx(skb);
 		}
