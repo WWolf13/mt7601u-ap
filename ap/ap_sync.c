@@ -758,7 +758,6 @@ VOID APPeerBeaconAction(
 #ifdef DOT11N_DRAFT3
 		if (pAd->CommonCfg.bOverlapScanning == TRUE) {
 			INT		index,secChIdx;
-			BOOLEAN		found = FALSE;
 			ADD_HTINFO *pAdd_HtInfo;
 
 			for (index = 0; index < pAd->ChannelListNum; index++) {
@@ -796,8 +795,6 @@ VOID APPeerBeaconAction(
 						pAd->ChannelList[index].bEffectedChannel |= EFFECTED_CH_LEGACY; /* 4; 1 for legacy AP. */
 						pAd->CommonCfg.BssCoexApCnt++;
 					}
-
-					found = TRUE;
 				}
 			}
 		}

@@ -1090,7 +1090,6 @@ VOID rtmp_read_wds_from_file(
 	/*WdsEnable */
 	if(RTMPGetKeyParameter("WdsEnable", tmpbuf, 10, buffer, TRUE))
 	{						
-		RT_802_11_WDS_ENTRY *pWdsEntry;
 		switch(simple_strtol(tmpbuf, 0, 10))
 		{
 			case 2: /* Bridge mode, DisAllow association(stop Beacon generation and Probe Req. */

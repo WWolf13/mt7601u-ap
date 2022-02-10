@@ -2982,9 +2982,6 @@ INT RTMPAPQueryInformation(
 	POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
 	STRING	driverVersion[8];
 
-#if defined(DBG) || defined(WSC_AP_SUPPORT)
-	UCHAR	apidx = pObj->ioctl_if;
-#endif
 #ifdef WSC_AP_SUPPORT
 	UINT		WscPinCode = 0;
 	PWSC_PROFILE	pProfile;
@@ -4457,10 +4454,7 @@ INT	Set_HideSSID_Proc(
 	else
 		return FALSE;  /*Invalid argument */
 	
-	if (pAd->ApCfg.MBSSID[pObj->ioctl_if].bHideSsid != bHideSsid)
-	{
-		pAd->ApCfg.MBSSID[pObj->ioctl_if].bHideSsid = bHideSsid;
-	}
+	pAd->ApCfg.MBSSID[pObj->ioctl_if].bHideSsid = bHideSsid;
 
 #ifdef WSC_V2_SUPPORT
 	if (pAd->ApCfg.MBSSID[pObj->ioctl_if].WscControl.WscV2Info.bEnableWpsV2)
@@ -4540,10 +4534,7 @@ INT	Set_VLAN_TAG_Proc(
 	else
 		return FALSE;  //Invalid argument 
 	
-	if (pAd->ApCfg.MBSSID[pObj->ioctl_if].bVLAN_Tag != bVLAN_Tag)
-	{
-		pAd->ApCfg.MBSSID[pObj->ioctl_if].bVLAN_Tag = bVLAN_Tag;
-	}
+	pAd->ApCfg.MBSSID[pObj->ioctl_if].bVLAN_Tag = bVLAN_Tag;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("IF(ra%d) Set_VLAN_TAG_Proc::(VLAN_Tag=%d)\n", pObj->ioctl_if, pAd->ApCfg.MBSSID[pObj->ioctl_if].bVLAN_Tag));
 
@@ -4577,9 +4568,7 @@ INT	Set_AP_AuthMode_Proc(
 	for (i=0; i<MAX_LEN_OF_MAC_TABLE; i++)
 	{
 		if (IS_ENTRY_CLIENT(&pAd->MacTab.Content[i]))
-		{
 			pAd->MacTab.Content[i].PortSecured  = WPA_802_1X_PORT_NOT_SECURED;
-		}
 	}
 
 	/* reset the PortSecure this BSS */
@@ -5245,24 +5234,18 @@ INT	Set_ACLShowAll_Proc(
 	IN	PSTRING			arg)
 {
 	RT_802_11_ACL			acl;
-	BOOLEAN				bDumpAll = FALSE;
+	INT				bDumpAll = 0;
 	POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
-#ifdef DBG
-	INT				i, j;
-#endif /* DBG */
 
 	bDumpAll = simple_strtol(arg, 0, 10);
 
-	if (bDumpAll == 1)
-		bDumpAll = TRUE;
-	else if (bDumpAll == 0)
+	if(bDumpAll == 0)
 	{
-		bDumpAll = FALSE;
 		DBGPRINT(RT_DEBUG_WARN, ("Your input is 0!\n"));
 		DBGPRINT(RT_DEBUG_WARN, ("The Access Control List will not be dumped!\n"));
 		return TRUE;
 	}
-	else
+	if(bDumpAll != 1)
 		return FALSE;  /* Invalid argument */
 
 	NdisZeroMemory(&acl, sizeof(RT_802_11_ACL));
@@ -5278,6 +5261,7 @@ INT	Set_ACLShowAll_Proc(
 	ASSERT(((bDumpAll == 1) && (acl.Num > 0)));
 
 #ifdef DBG
+	INT				i, j;
 	/* Show the corresponding policy first. */
 	printk("=============== Access Control Policy ===============\n");
 	printk("Policy is %ld : ", acl.Policy);
@@ -7339,7 +7323,6 @@ VOID RTMPIoctlStatistics(
 	IN PRTMP_ADAPTER pAd, 
 	IN RTMP_IOCTL_INPUT_STRUCT *wrq)
 {
-	INT Status;
 	PSTRING msg;
 #ifdef WSC_AP_SUPPORT
     UCHAR idx = 0;
@@ -7517,7 +7500,7 @@ VOID RTMPIoctlStatistics(
 #endif /* RTMP_EFUSE_SUPPORT */    
     /* Copy the information into the user buffer */
     wrq->u.data.length = strlen(msg);
-    Status = copy_to_user(wrq->u.data.pointer, msg, wrq->u.data.length);
+    copy_to_user(wrq->u.data.pointer, msg, wrq->u.data.length);
 
 	os_free_mem(NULL, msg);
 /*	kfree(msg); */
@@ -9517,9 +9500,7 @@ INT Set_AP_WscMultiByteCheck_Proc(
 		return FALSE;	
 
 	if (pWpsCtrl->bCheckMultiByte != bEnable)
-	{
 		pWpsCtrl->bCheckMultiByte = bEnable;
-	}
 	
 	DBGPRINT(RT_DEBUG_TRACE, ("IF(ra%d) Set_AP_WscMultiByteCheck_Proc::(bCheckMultiByte=%d)\n", 
 		apidx, pWpsCtrl->bCheckMultiByte));
@@ -11277,7 +11258,6 @@ INT	Set_TestTxFrameProc(
 		ULONG	FrameLen = 0;
 		//ULONG	TempLen;
 		UCHAR	idxCount;
-		ULONG TmpLen1 = 0;
 		UCHAR RalinkIe[10] = {0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf};
 		NDIS_STATUS	NStatus = NDIS_STATUS_SUCCESS;
 
@@ -11293,7 +11273,7 @@ INT	Set_TestTxFrameProc(
 		{
 			//ULONG TmpLen1 = 0;
 			//UCHAR RalinkIe[10] = {0xa5, 0xa5, 0xa5, 0xa5, 0xa5, 0xa5, 0xa5, 0xa5, 0xa5, 0xa5};
-			TmpLen1 = 0;
+			ULONG TmpLen1 = 0;
 
 			MakeOutgoingFrame(pOutBuffer+FrameLen,		&TmpLen1,
 								10,					RalinkIe,
@@ -11384,8 +11364,8 @@ INT	Set_TestTxFrame1Proc(
 
 		if (pAd->CommonCfg.PhyMode >= PHY_11ABGN_MIXED)
 		{
-			UCHAR	j, bitmask; /*k,bitmask; */
-			CHAR    i;
+			UCHAR	j, bitmask;	
+			CHAR k;
 
 			if ((pAd->CommonCfg.HtCapability.HtCapInfo.GF) && (pAd->CommonCfg.DesiredHtPhy.GF))
 			{
@@ -11411,16 +11391,16 @@ INT	Set_TestTxFrame1Proc(
 			}
 				
 			/* find max fixed rate */
-			for (i=23; i>=0; i--) /* 3*3 */
+			for (k=23; k>=0; k--) /* 3*3 */
 			{
-				j = i/8;
-				bitmask = (1<<(i-(j*8)));
+				j = k/8;
+				bitmask = (1<<(k-(j*8)));
 				if ((pAd->ApCfg.MBSSID[pMacEntry->apidx].DesiredHtPhyInfo.MCSSet[j] & bitmask) && (pAd->CommonCfg.HtCapability.MCSSet[j] & bitmask))
 				{
-					pMacEntry->MaxHTPhyMode.field.MCS = i;
+					pMacEntry->MaxHTPhyMode.field.MCS = k;
 					break;
 				}
-				if (i==0)
+				if (k==0)
 					break;
 			}
 
@@ -11738,11 +11718,8 @@ INT Set_DumpBeaconBuffer_Proc(
 	IN RTMP_ADAPTER		*pAd,
 	IN PSTRING			arg)
 {
-	LONG count;
 	UINT32 IdMac;
 	UINT32 macValue;
-
-	count = simple_strtol(arg, 0, 10);
 
 	for(IdMac=0x7800; IdMac<=0x7e00; IdMac+=4)
 	{

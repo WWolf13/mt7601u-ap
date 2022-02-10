@@ -182,7 +182,6 @@ static void rtusb_dataout_complete(unsigned long data)
 {
 	PRTMP_ADAPTER		pAd;
 	purbb_t				pUrb;
-	POS_COOKIE			pObj;
 	PHT_TX_CONTEXT		pHTTXContext;
 	UCHAR				BulkOutPipeId;
 	NTSTATUS			Status;
@@ -194,7 +193,6 @@ static void rtusb_dataout_complete(unsigned long data)
 	pHTTXContext	= (PHT_TX_CONTEXT)RTMP_USB_URB_DATA_GET(pUrb);
 	Status			= RTMP_USB_URB_STATUS_GET(pUrb);
 	pAd				= pHTTXContext->pAd;
-	pObj 			= (POS_COOKIE) pAd->OS_Cookie;
 /*	Status			= pUrb->status; */
 
 	/* Store BulkOut PipeId */

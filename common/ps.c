@@ -142,7 +142,7 @@ VOID RtmpHandleRxPsPoll(
 { 
 	PQUEUE_ENTRY	  pEntry;
 	PMAC_TABLE_ENTRY  pMacEntry;
-	unsigned long		IrqFlags;
+	unsigned long		IrqFlags=0;
 
 	/*DBGPRINT(RT_DEBUG_TRACE,("rcv PS-POLL (AID=%d) from %02x:%02x:%02x:%02x:%02x:%02x\n", */
 	/*	  Aid, pAddr[0], pAddr[1], pAddr[2], pAddr[3], pAddr[4], pAddr[5])); */

@@ -85,7 +85,7 @@ ssize_t video_Update_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val=0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -95,7 +95,7 @@ ssize_t video_Update_set(struct file *file, const char __user * buffer,
 
 		UpdateFromGlobal = val;
 	}
-        return count;
+	return count;
 }
 
 ssize_t video_Enable_get(char *page, char **start, off_t off, int count,
@@ -112,7 +112,7 @@ ssize_t video_Enable_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val=0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -139,7 +139,7 @@ ssize_t video_ClassifierEnable_set(struct file *file, const char __user * buffer
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val=0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -149,7 +149,7 @@ ssize_t video_ClassifierEnable_set(struct file *file, const char __user * buffer
 
 		GLOBAL_AP_VIDEO_CONFIG.ClassifierEnable = val;
 	}
-        return count;
+	return count;
 }
 
 ssize_t video_HighTxMode_get(char *page, char **start, off_t off, int count,
@@ -157,7 +157,7 @@ ssize_t video_HighTxMode_get(char *page, char **start, off_t off, int count,
 {
 	sprintf(page, "%d\n", GLOBAL_AP_VIDEO_CONFIG.HighTxMode);
 	*eof = 1;
-        return strlen(page);
+	return strlen(page);
 }
 
 ssize_t video_HighTxMode_set(struct file *file, const char __user * buffer,
@@ -166,7 +166,7 @@ ssize_t video_HighTxMode_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val=0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -176,7 +176,7 @@ ssize_t video_HighTxMode_set(struct file *file, const char __user * buffer,
 
 		GLOBAL_AP_VIDEO_CONFIG.HighTxMode = val;
 	}
-        return count;
+	return count;
 }
 
 ssize_t video_TxPwr_get(char *page, char **start, off_t off, int count,
@@ -184,7 +184,7 @@ ssize_t video_TxPwr_get(char *page, char **start, off_t off, int count,
 {
 	sprintf(page, "%d\n", GLOBAL_AP_VIDEO_CONFIG.TxPwr);
 	*eof = 1;
-        return strlen(page);
+	return strlen(page);
 }
 
 ssize_t video_TxPwr_set(struct file *file, const char __user * buffer,
@@ -193,7 +193,7 @@ ssize_t video_TxPwr_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val=0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -203,7 +203,7 @@ ssize_t video_TxPwr_set(struct file *file, const char __user * buffer,
 
 		GLOBAL_AP_VIDEO_CONFIG.TxPwr = val;
 	}
-        return count;
+	return count;
 }
 
 ssize_t video_VideoMCSEnable_get(char *page, char **start, off_t off, int count,
@@ -220,7 +220,7 @@ ssize_t video_VideoMCSEnable_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val=0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -230,7 +230,7 @@ ssize_t video_VideoMCSEnable_set(struct file *file, const char __user * buffer,
 
 		GLOBAL_AP_VIDEO_CONFIG.VideoMCSEnable = val;
 	}
-        return count;
+	return count;
 }
 
 ssize_t video_VideoMCS_get(char *page, char **start, off_t off, int count,
@@ -247,7 +247,7 @@ ssize_t video_VideoMCS_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val=0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -257,7 +257,7 @@ ssize_t video_VideoMCS_set(struct file *file, const char __user * buffer,
 
 		GLOBAL_AP_VIDEO_CONFIG.VideoMCS = val;
 	}
-        return count;
+	return count;
 }
 
 ssize_t video_TxBASize_get(char *page, char **start, off_t off, int count,
@@ -274,7 +274,7 @@ ssize_t video_TxBASize_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val=0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -284,7 +284,7 @@ ssize_t video_TxBASize_set(struct file *file, const char __user * buffer,
 
 		GLOBAL_AP_VIDEO_CONFIG.TxBASize = val;
 	}
-        return count;
+	return count;
 }
 
 ssize_t video_TxLifeTimeMode_get(char *page, char **start, off_t off, int count,
@@ -301,7 +301,7 @@ ssize_t video_TxLifeTimeMode_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val=0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -311,7 +311,7 @@ ssize_t video_TxLifeTimeMode_set(struct file *file, const char __user * buffer,
 
 		GLOBAL_AP_VIDEO_CONFIG.TxLifeTimeMode = val;
 	}
-        return count;
+	return count;
 }
 
 ssize_t video_TxLifeTime_get(char *page, char **start, off_t off, int count,
@@ -328,7 +328,7 @@ ssize_t video_TxLifeTime_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val=0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -338,7 +338,7 @@ ssize_t video_TxLifeTime_set(struct file *file, const char __user * buffer,
 
 		GLOBAL_AP_VIDEO_CONFIG.TxLifeTime = val;
 	}
-        return count;
+	return count;
 }
 
 ssize_t video_TxRetryLimit_get(char *page, char **start, off_t off, int count,
@@ -355,7 +355,7 @@ ssize_t video_TxRetryLimit_set(struct file *file, const char __user * buffer,
 	char *buf = kmalloc(count, GFP_KERNEL);
 
 	if (buf) {
-		unsigned long val;
+		unsigned long val=0;
 
 		if (copy_from_user(buf, buffer, count))
 			return -EFAULT;
@@ -365,7 +365,7 @@ ssize_t video_TxRetryLimit_set(struct file *file, const char __user * buffer,
 
 		GLOBAL_AP_VIDEO_CONFIG.TxRetryLimit = val;
 	}
-        return count;
+	return count;
 }
 
 int wl_video_proc_init(void)

@@ -618,7 +618,6 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 
 	/* add WMM IE here */
 	if (pMbss->bWmmCapable){
-		UCHAR i;
 		UCHAR WmeParmIe[26] = {IE_VENDOR_SPECIFIC, 24, 0x00, 0x50, 0xf2, 0x02, 0x01, 0x01, 0, 0};
 		WmeParmIe[8] = pAd->ApCfg.BssEdcaParm.EdcaUpdateCount & 0x0f;
 #ifdef UAPSD_SUPPORT
@@ -823,7 +822,7 @@ VOID APMakeAllBssBeacon(
 
 	/* set Multiple BSSID mode */
 	if (NumOfMacs <= 1) {
-		pAd->ApCfg.MacMask = ~(1 - 1);
+		pAd->ApCfg.MacMask = ~(0);
 		/*regValue |= 0x0;*/
 	} else if (NumOfMacs <= 2) {
 		if (pAd->CurrentAddress[5] % 2 != 0)

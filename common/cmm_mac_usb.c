@@ -743,7 +743,6 @@ NDIS_STATUS	NICInitRecv(
 	PCMD_RSP_CONTEXT pCmdRspEventContext = &pAd->CmdRspEventContext;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("--> NICInitRecv\n"));
-	pObj = pObj;
 
 	/*InterlockedExchange(&pAd->PendingRx, 0);*/
 	pAd->PendingRx = 0;
@@ -843,7 +842,6 @@ NDIS_STATUS	NICInitTransmit(
 	RTMP_MGMT_RING  *pMgmtRing;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("--> NICInitTransmit\n"));
-	pObj = pObj;
 
 	/* Init 4 set of Tx parameters*/
 	for(acidx = 0; acidx < NUM_OF_TX_RING; acidx++)
@@ -856,12 +854,9 @@ NDIS_STATUS	NICInitTransmit(
 		pAd->BulkOutPending[acidx] = FALSE; /* Buck Out control flag	*/
 	}
 
-
 	do
 	{
-
 		/* TX_RING_SIZE, 4 ACs*/
-
 		for(acidx=0; acidx<NUM_OF_TX_RING; acidx++)
 		{
 			PHT_TX_CONTEXT	pHTTXContext = &(pAd->TxContext[acidx]);

@@ -120,9 +120,9 @@ VOID APPeerDlsReqAction(
 	pDAEntry = MacTableLookup(pAd, DA);
 	if (!pDAEntry)
 		Status = MLME_DEST_STA_NOT_IN_QBSS;
-	else if (pDAEntry && (pDAEntry->apidx != pSAEntry->apidx))
+	else if (pDAEntry->apidx != pSAEntry->apidx)
 		Status = MLME_DEST_STA_NOT_IN_QBSS;
-	else if (pDAEntry && !CLIENT_STATUS_TEST_FLAG(pDAEntry, fCLIENT_STATUS_WMM_CAPABLE))
+	else if (!CLIENT_STATUS_TEST_FLAG(pDAEntry, fCLIENT_STATUS_WMM_CAPABLE))
 		Status = MLME_DEST_STA_IS_NOT_A_QSTA;
 	else if (pDAEntry->WepStatus != pSAEntry->WepStatus)
 		Status = MLME_QOS_UNSPECIFY; /* different security algorithm */

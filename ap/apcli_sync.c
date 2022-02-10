@@ -358,14 +358,10 @@ static VOID ApCliPeerProbeRspAtJoinAction(
 
 				if (ie_list->AddHtInfoLen > 0)
 				{
-					CentralChannel = ie_list->AddHtInfo.ControlChan;
 		 			/* Check again the Bandwidth capability of this AP. */
-					CentralChannel = get_cent_ch_by_htinfo(pAd, &ie_list->AddHtInfo,
-														&ie_list->HtCapability);
+					CentralChannel = get_cent_ch_by_htinfo(pAd, &ie_list->AddHtInfo, &ie_list->HtCapability);
 		 			DBGPRINT(RT_DEBUG_TRACE, ("PeerBeaconAtJoinAction HT===>Central Channel = %d, Control Channel = %d,  .\n", CentralChannel, ie_list->AddHtInfo.ControlChan));
-
 				}
-				
 			}
 			else
 #endif /* DOT11_N_SUPPORT */

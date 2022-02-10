@@ -4741,8 +4741,6 @@ if (0 /*!(pRxInfo->Mcast || pRxInfo->Bcast)*/){
 	/* handle WDS */
 	if ((pFmeCtrl->FrDs == 1) && (pFmeCtrl->ToDs == 1))
 	{
-		do
-		{
 #ifdef CLIENT_WDS
 			pEntry = MacTableLookup(pAd, pHeader->Addr2);
 			if (pEntry != NULL)
@@ -4808,7 +4806,6 @@ if (0 /*!(pRxInfo->Mcast || pRxInfo->Bcast)*/){
 				break;
 			}
 #endif /* WDS_SUPPORT */
-		} while(FALSE);
 
 		if (pEntry == NULL)
 		{

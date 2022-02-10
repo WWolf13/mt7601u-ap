@@ -511,7 +511,6 @@ VOID MlmeGetSupportedMcs(
 	OUT CHAR 	mcs[])
 {
 	CHAR	idx;
-	RTMP_RA_LEGACY_TB *pCurrTxRate;
 
 	for (idx=0; idx<24; idx++)
 		mcs[idx] = -1;
@@ -519,7 +518,7 @@ VOID MlmeGetSupportedMcs(
 	/*  check the existence and index of each needed MCS */
 	for (idx=0; idx<RATE_TABLE_SIZE(pTable); idx++)
 	{
-		pCurrTxRate = PTX_RA_LEGACY_ENTRY(pTable, idx);
+		RTMP_RA_LEGACY_TB *pCurrTxRate = PTX_RA_LEGACY_ENTRY(pTable, idx);
 
 		/*  Rate Table may contain CCK and MCS rates. Give HT/Legacy priority over CCK */
 		if (pCurrTxRate->CurrMCS==MCS_0 && (mcs[0]==-1 || pCurrTxRate->Mode!=MODE_CCK))

@@ -112,7 +112,7 @@ VOID WpaSendMicFailureToWpaSupplicant(
     
 	snprintf(custom, sizeof(custom), "MLME-MICHAELMICFAILURE.indication");
 	if(bUnicast)
-		sprintf(custom, "%s unicast", custom);
+		snprintf(custom, sizeof(custom), "%s unicast", custom);
 
 	RtmpOSWrielessEventSend(pNetDev, RT_WLAN_EVENT_CUSTOM, -1, NULL, (PUCHAR)custom, strlen(custom));
 	

@@ -535,8 +535,6 @@ USHORT RtmpUSB_WriteSingleTxResource(
 	pHTTXContext  = &pAd->TxContext[QueIdx];
 	fillOffset = pHTTXContext->CurWritePosition;
 
-
-
 	/* Check ring full */
 	Status = RtmpUSBCanDoWrite(pAd, QueIdx, pHTTXContext);
 	if(Status == NDIS_STATUS_SUCCESS)
@@ -618,8 +616,8 @@ USHORT RtmpUSB_WriteSingleTxResource(
 #ifdef TX_PKT_SG
 		if (pTxBlk->pkt_info.BufferCount > 1) {
 			INT i, len;
-			void *data;
 			PKT_SG_T *sg = &pTxBlk->pkt_info.sg_list[0];
+			void *data = sg[0].data;;
 
 			for (i = 0 ; i < pTxBlk->pkt_info.BufferCount; i++) {
 				data = sg[i].data;
@@ -1106,13 +1104,10 @@ VOID RtmpUSBNullFrameKickOut(
 #endif /* CONFIG_MULTI_CHANNEL */
 	if (pNullContext->InUse == FALSE)
 	{
-		PTX_CONTEXT pNullContext;
 		TXINFO_STRUC *pTxInfo;
 		TXWI_STRUC *pTxWI;
 		UCHAR *pWirelessPkt;
 		UINT8 TXWISize = pAd->chipCap.TXWISize;
-
-		pNullContext = &(pAd->NullContext[0]);
 
 		/* Set the in use bit*/
 		pNullContext->InUse = TRUE;
@@ -1150,7 +1145,6 @@ VOID RtmpUSBNullFrameKickOut(
 		/* Kick bulk out */
 		RTUSBKickBulkOut(pAd);
 	}
-
 }
 
 

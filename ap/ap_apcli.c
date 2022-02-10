@@ -727,11 +727,9 @@ VOID ApCliIfDown(
 	IN PRTMP_ADAPTER pAd)
 {
 	UCHAR ifIndex;
-	PAPCLI_STRUCT pApCliEntry;
 
 	for(ifIndex = 0; ifIndex < MAX_APCLI_NUM; ifIndex++)
 	{
-		pApCliEntry = &pAd->ApCfg.ApCliTab[ifIndex];
 		DBGPRINT(RT_DEBUG_TRACE, ("(%s) ApCli interface[%d] startdown.\n", __FUNCTION__, ifIndex));
 		MlmeEnqueue(pAd, APCLI_CTRL_STATE_MACHINE, APCLI_CTRL_DISCONNECT_REQ, 0, NULL, ifIndex);
 	}
@@ -1159,42 +1157,24 @@ static inline BOOLEAN ValidApCliEntry(
 	IN PRTMP_ADAPTER pAd,
 	IN INT apCliIdx)
 {
-	BOOLEAN result;
 	PMAC_TABLE_ENTRY pMacEntry;
-	APCLI_STRUCT *pApCliEntry;
-	do
-	{
-		if ((apCliIdx < 0) || (apCliIdx >= MAX_APCLI_NUM))
-		{
-			result = FALSE;
-			break;
-		}
+	APCLI_STRUCT *pApCliEntry = NULL;
 
-		pApCliEntry = (APCLI_STRUCT *)&pAd->ApCfg.ApCliTab[apCliIdx];
-		if (pApCliEntry->Valid != TRUE)
-		{
-			result = FALSE;
-			break;
-		}
+	if( (apCliIdx < 0) || (apCliIdx >= MAX_APCLI_NUM) )
+		return FALSE;
 
-		if ((pApCliEntry->MacTabWCID <= 0) 
-			|| (pApCliEntry->MacTabWCID >= MAX_LEN_OF_MAC_TABLE))
-		{
-			result = FALSE;
-			break;
-		}
-	
-		pMacEntry = &pAd->MacTab.Content[pApCliEntry->MacTabWCID];
-		if (!IS_ENTRY_APCLI(pMacEntry))
-		{
-			result = FALSE;
-			break;
-		}
-			
-		result = TRUE;
-	} while(FALSE);
+	pApCliEntry = (APCLI_STRUCT*)&pAd->ApCfg.ApCliTab[apCliIdx];
+	if(pApCliEntry == NULL || pApCliEntry->Valid == FALSE)
+		return FALSE;
 
-	return result;
+	if((pApCliEntry->MacTabWCID <= 0) || (pApCliEntry->MacTabWCID >= MAX_LEN_OF_MAC_TABLE))
+			return FALSE;
+
+	pMacEntry = &pAd->MacTab.Content[pApCliEntry->MacTabWCID];
+	if(!IS_ENTRY_APCLI(pMacEntry))
+		return FALSE;
+
+	return TRUE;
 }
 
 

@@ -78,7 +78,6 @@ VOID MBSS_Init(
 #define MBSS_MAX_DEV_NUM	32
 	PNET_DEV pDevNew;
 	INT32 IdBss, MaxNumBss;
-	INT status;
 	RTMP_OS_NETDEV_OP_HOOK	netDevHook;
 
 	/* sanity check to avoid redundant virtual interfaces are created */
@@ -133,8 +132,7 @@ VOID MBSS_Init(
 		pAd->ApCfg.MBSSID[IdBss].MSSIDDev = pDevNew;
 
 		/* register this device to OS */
-		status = RtmpOSNetDevAttach(pAd->OpMode, pDevNew, &netDevHook);
-
+		RtmpOSNetDevAttach(pAd->OpMode, pDevNew, &netDevHook);
 	}
 	pAd->FlgMbssInit = TRUE;
 }
@@ -159,14 +157,11 @@ Note:
 VOID MBSS_Remove(
 	IN PRTMP_ADAPTER 	pAd)
 {
-	MULTISSID_STRUCT *pMbss;
 	UINT IdBss;
-
-
 
 	for(IdBss=FIRST_MBSSID; IdBss<MAX_MBSSID_NUM(pAd); IdBss++)
 	{
-		pMbss = &pAd->ApCfg.MBSSID[IdBss];
+		MULTISSID_STRUCT *pMbss = &pAd->ApCfg.MBSSID[IdBss];
 		RtmpOSNetDevProtect(1);
 		if (pMbss->MSSIDDev)
 		{

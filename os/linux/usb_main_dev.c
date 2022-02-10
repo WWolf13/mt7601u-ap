@@ -383,19 +383,16 @@ static int rt2870_suspend(
 	VOID *pAd = usb_get_intfdata(intf);
 #if (defined(WOW_SUPPORT) && defined(RTMP_MAC_USB)) || defined(NEW_WOW_SUPPORT)
 	UCHAR Flag;
-
 	RTMP_DRIVER_ADAPTER_RT28XX_WOW_STATUS(pAd, &Flag);
 #endif /* (defined(WOW_SUPPORT) && defined(RTMP_MAC_USB)) || defined(NEW_WOW_SUPPORT) */
 
 	DBGPRINT(RT_DEBUG_TRACE, ("rt2870_suspend()\n"));
 
 #ifdef USB_SUPPORT_SELECTIVE_SUSPEND
-	UCHAR Flag;
-	DBGPRINT(RT_DEBUG_ERROR, ("rt2870_suspend()\n"));
 
-#if (defined(WOW_SUPPORT) && defined(RTMP_MAC_USB)) || defined(NEW_WOW_SUPPORT)
+	#if (defined(WOW_SUPPORT) && defined(RTMP_MAC_USB)) || defined(NEW_WOW_SUPPORT)
 	if (Flag == FALSE)
-#endif /* (defined(WOW_SUPPORT) && defined(RTMP_MAC_USB)) || defined(NEW_WOW_SUPPORT) */
+	#endif /* (defined(WOW_SUPPORT) && defined(RTMP_MAC_USB)) || defined(NEW_WOW_SUPPORT) */
 	{
 /*	if(!RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_IDLE_RADIO_OFF)) */
 		RTMP_DRIVER_ADAPTER_END_DISSASSOCIATE(pAd);
@@ -432,16 +429,13 @@ static int rt2870_resume(
 {
 	//struct net_device *net_dev;
 	VOID *pAd = usb_get_intfdata(intf);
-#if (defined(WOW_SUPPORT) && defined(RTMP_MAC_USB)) || defined(NEW_WOW_SUPPORT)
-	UCHAR Flag;
-#endif /* (defined(WOW_SUPPORT) && defined(RTMP_MAC_USB)) || defined(NEW_WOW_SUPPORT) */
 
 #ifdef USB_SUPPORT_SELECTIVE_SUSPEND
 	int pm_usage_cnt;
-	UCHAR Flag;
 #endif /* USB_SUPPORT_SELECTIVE_SUSPEND */
 
 #if (defined(WOW_SUPPORT) && defined(RTMP_MAC_USB)) || defined(NEW_WOW_SUPPORT)
+	UCHAR Flag;
 	RTMP_DRIVER_ADAPTER_RT28XX_WOW_STATUS(pAd, &Flag);
 #endif /* (defined(WOW_SUPPORT) && defined(RTMP_MAC_USB)) || defined(NEW_WOW_SUPPORT) */
 

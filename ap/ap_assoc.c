@@ -400,8 +400,7 @@ static USHORT APBuildAssociation(
 {
 	USHORT StatusCode = MLME_SUCCESS;
 	UCHAR MaxSupportedRate = RATE_11;
-	MULTISSID_STRUCT *wdev;
-
+  MULTISSID_STRUCT *wdev;
 
 	MaxSupportedRate = dot11_2_ra_rate(MaxSupportedRateIn500Kbps);
 
@@ -423,7 +422,7 @@ static USHORT APBuildAssociation(
 	if (!pEntry)
 		return MLME_UNSPECIFY_FAIL;
 
-	if (pEntry && ((pEntry->Sst == SST_AUTH) || (pEntry->Sst == SST_ASSOC)))
+	if((pEntry->Sst == SST_AUTH) || (pEntry->Sst == SST_ASSOC))
 	{
 		/* TODO: */
 		/* should qualify other parameters, for example - capablity, supported rates, listen interval, ... etc */
@@ -445,7 +444,6 @@ static USHORT APBuildAssociation(
 
 		NdisMoveMemory(pEntry->RSN_IE, &ie_list->RSN_IE[0], ie_list->RSNIE_Len);
 		pEntry->RSNIE_Len = ie_list->RSNIE_Len;
-
 
 		wdev = &pAd->ApCfg.MBSSID[pEntry->apidx];
 		if (*pAid == 0)
@@ -927,7 +925,7 @@ VOID ap_cmm_peer_assoc_req_action(
 
 		/* 7.3.2.27 Extended Capabilities IE */
 		{
-			ULONG TmpLen, infoPos;
+			ULONG infoPos;
 			PUCHAR pInfo;
 			UCHAR extInfoLen;
 			BOOLEAN bNeedAppendExtIE = FALSE;
@@ -973,7 +971,7 @@ VOID ap_cmm_peer_assoc_req_action(
 			(pAd->CommonCfg.HtCapability.HtCapInfo.ChannelWidth == 1))
 	 	{
 			OVERLAP_BSS_SCAN_IE OverlapScanParam;
-			ULONG TmpLen;
+			//ULONG TmpLen;
 			UCHAR OverlapScanIE, ScanIELen;
 
 			OverlapScanIE = IE_OVERLAPBSS_SCAN_PARM;
@@ -1367,7 +1365,6 @@ VOID APPeerDisassocReqAction(
 	USHORT Reason;
 	UINT16 SeqNum;		
 	MAC_TABLE_ENTRY *pEntry;
-	MULTISSID_STRUCT *wdev;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("ASSOC - 1 receive DIS-ASSOC request \n"));
 	if (!PeerDisassocReqSanity(pAd, Elem->Msg, Elem->MsgLen, Addr2, &SeqNum, &Reason))
@@ -1385,7 +1382,7 @@ VOID APPeerDisassocReqAction(
 	{
 
 #ifdef DOT1X_SUPPORT
-		wdev = &pAd->ApCfg.MBSSID[pEntry->apidx];
+		MULTISSID_STRUCT *wdev = &pAd->ApCfg.MBSSID[pEntry->apidx];
 		/* Notify 802.1x daemon to clear this sta info */
 		if (pEntry->AuthMode == Ndis802_11AuthModeWPA || 
 			pEntry->AuthMode == Ndis802_11AuthModeWPA2 ||

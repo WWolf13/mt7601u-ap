@@ -172,10 +172,7 @@ NDIS_STATUS	RTMPReadParametersHook(
 		{
 			retval =RtmpOSFileRead(srcf, buffer, MAX_INI_BUFFER_SIZE);
 			if (retval > 0)
-			{
 				RTMPSetProfileParameters(pAd, buffer);
-				retval = NDIS_STATUS_SUCCESS;
-			}
 			else
 				DBGPRINT(RT_DEBUG_ERROR, ("Read file \"%s\" failed(errCode=%d)!\n", src, retval));
 
@@ -702,10 +699,6 @@ INT RTMP_AP_IoctlPrepare(
 	POS_COOKIE pObj;
 	USHORT index;
 	INT	Status = NDIS_STATUS_SUCCESS;
-#ifdef CONFIG_APSTA_MIXED_SUPPORT
-	INT cmd = 0xff;
-#endif /* CONFIG_APSTA_MIXED_SUPPORT */
-
 
 	pObj = (POS_COOKIE) pAd->OS_Cookie;
 	

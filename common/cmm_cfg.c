@@ -792,9 +792,6 @@ INT RTMP_COM_IoctlHandle(
 	UCHAR PermanentAddress[MAC_ADDR_LEN];
 	USHORT Addr01, Addr23, Addr45;
 
-
-	pObj = pObj; /* avoid compile warning */
-
 	switch(cmd)
 	{
 		case CMD_RTPRIV_IOCTL_NETDEV_GET:

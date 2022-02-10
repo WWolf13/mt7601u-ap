@@ -1102,7 +1102,7 @@ VOID RTMPGetTxTscFromAsic(
 	USHORT			Wcid;
 	USHORT			offset;
 	UCHAR			IvEiv[8];
-	int				i;
+
 
 	/* Sanity check of apidx */
 	if (apidx >= MAX_MBSSID_NUM(pAd))
@@ -1133,6 +1133,7 @@ VOID RTMPGetTxTscFromAsic(
 	else
 	{
 		UINT32 temp1, temp2;
+		int				i;
 		/* Read IVEIV from Asic */
 		offset = MAC_IVEIV_TABLE_BASE + (Wcid * HW_IVEIV_ENTRY_SIZE);
 

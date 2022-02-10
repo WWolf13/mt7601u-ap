@@ -87,13 +87,8 @@ INT WdsVirtualIF_open(
 	IN	PNET_DEV dev)
 {
 	VOID			*pAd;
-#ifdef RTL865X_SOC
-	INT				index;
-	unsigned int 	linkid;
-#endif
 
 	DBGPRINT(RT_DEBUG_TRACE, ("%s: ===> VirtualIF_open\n", RTMP_OS_NETDEV_GET_DEVNAME(dev)));
-
 
 	pAd = RTMP_OS_NETDEV_GET_PRIV(dev);
 	if (VIRTUAL_IF_UP(pAd) != 0)

@@ -465,11 +465,6 @@ PNDIS_PACKET DuplicatePacket(
 {
 	struct sk_buff *skb;
 	PNDIS_PACKET pRetPacket = NULL;
-	USHORT DataSize;
-	UCHAR *pData;
-
-	DataSize = (USHORT) GET_OS_PKT_LEN(pPacket);
-	pData = (PUCHAR) GET_OS_PKT_DATAPTR(pPacket);
 
 	skb = skb_clone(RTPKT_TO_OSPKT(pPacket), MEM_ALLOC_FLAG);
 	if (skb) {
@@ -479,7 +474,6 @@ PNDIS_PACKET DuplicatePacket(
 	}
 
 	return pRetPacket;
-
 }
 
 
@@ -4076,7 +4070,7 @@ VOID RtmpOsIntLock(NDIS_SPIN_LOCK *pLockOrg, ULONG *pIrqFlags)
 	pLock = (OS_NDIS_SPIN_LOCK *) (pLockOrg->pContent);
 	if (pLock != NULL) {
 		OS_INT_LOCK(pLock, *pIrqFlags);
-	} else
+	} 
 }
 
 
@@ -4102,7 +4096,7 @@ VOID RtmpOsIntUnLock(NDIS_SPIN_LOCK *pLockOrg, ULONG IrqFlags)
 	pLock = (OS_NDIS_SPIN_LOCK *) (pLockOrg->pContent);
 	if (pLock != NULL) {
 		OS_INT_UNLOCK(pLock, IrqFlags);
-	} else
+	} 
 }
 
 

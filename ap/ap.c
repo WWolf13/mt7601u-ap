@@ -853,17 +853,15 @@ VOID APCleanupPsQueue(
 */
 VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 	int i;
-#ifdef DOT11_N_SUPPORT
+	
+	#ifdef DOT11_N_SUPPORT
 	ULONG MinimumAMPDUSize = pAd->CommonCfg.DesiredHtPhy.MaxRAmpduFactor; /*Default set minimum AMPDU Size to 2, i.e. 32K */
 	BOOLEAN	bRdgActive;
 	BOOLEAN bRalinkBurstMode;
-#endif /* DOT11_N_SUPPORT */
+	#endif /* DOT11_N_SUPPORT */
 	UINT	fAnyStationPortSecured[HW_BEACON_MAX_NUM];
  	UINT 	bss_index;
 	MAC_TABLE *pMacTable;
-#if defined(PRE_ANT_SWITCH) || defined(CFO_TRACK)
-	int lastClient = 0;
-#endif /* defined(PRE_ANT_SWITCH) || defined(CFO_TRACK) */
 
 	for (bss_index = BSS0; bss_index < MAX_MBSSID_NUM(pAd); bss_index++)
 		fAnyStationPortSecured[bss_index] = 0;
@@ -873,31 +871,31 @@ VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 	pMacTable->fAnyStationBadAtheros = FALSE;
 	pMacTable->fAnyTxOPForceDisable = FALSE;
 	pMacTable->fAllStationAsRalink = TRUE;
-#ifdef DOT11_N_SUPPORT
+	#ifdef DOT11_N_SUPPORT
 	pMacTable->fAnyStationNonGF = FALSE;
 	pMacTable->fAnyStation20Only = FALSE;
 	pMacTable->fAnyStationIsLegacy = FALSE;
 	pMacTable->fAnyStationMIMOPSDynamic = FALSE;
-#ifdef GREENAP_SUPPORT
-	/*Support Green AP */
-	pMacTable->fAnyStationIsHT = FALSE;
-#endif /* GREENAP_SUPPORT */
+		#ifdef GREENAP_SUPPORT
+		pMacTable->fAnyStationIsHT = FALSE;
+		#endif /* GREENAP_SUPPORT */
 
-#ifdef DOT11N_DRAFT3
-	pMacTable->fAnyStaFortyIntolerant = FALSE;
-#endif /* DOT11N_DRAFT3 */
+		#ifdef DOT11N_DRAFT3
+		pMacTable->fAnyStaFortyIntolerant = FALSE;
+		#endif /* DOT11N_DRAFT3 */
 	pMacTable->fAllStationGainGoodMCS = TRUE;
-#endif /* DOT11_N_SUPPORT */
+	#endif /* DOT11_N_SUPPORT */
 
-#ifdef WAPI_SUPPORT
+	#ifdef WAPI_SUPPORT
 	pMacTable->fAnyWapiStation = FALSE;
-#endif /* WAPI_SUPPORT */
+	#endif /* WAPI_SUPPORT */
 
-	for (i = 1; i < MAX_LEN_OF_MAC_TABLE; i++) {
+	for (i = 1; i < MAX_LEN_OF_MAC_TABLE; i++) 
+	{
 		MAC_TABLE_ENTRY *pEntry = &pMacTable->Content[i];
 		BOOLEAN bDisconnectSta = FALSE;
-#ifdef APCLI_SUPPORT
-#ifdef APCLI_WPA_SUPPLICANT_SUPPORT
+		#ifdef APCLI_SUPPORT
+		#ifdef APCLI_WPA_SUPPLICANT_SUPPORT
 		if (IS_ENTRY_APCLI(pEntry) && pEntry->PortSecured == WPA_802_1X_PORT_SECURED) {
 			if ((pAd->Mlme.OneSecPeriodicRound % 10) == 8) {
 				/* use Null or QoS Null to detect the ACTIVE station*/
@@ -911,8 +909,8 @@ VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 				continue;
 			}
 		}
-#endif /*APCLI_WPA_SUPPLICANT_SUPPORT */
-#endif /* APCLI_SUPPORT */
+		#endif /*APCLI_WPA_SUPPLICANT_SUPPORT */
+		#endif /* APCLI_SUPPORT */
 
 		if (!IS_ENTRY_CLIENT(pEntry))
 			continue;
@@ -924,14 +922,15 @@ VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 		pEntry->StaConnectTime ++;
 
 		/* 0. STA failed to complete association should be removed to save MAC table space. */
-		if ((pEntry->Sst != SST_ASSOC) && (pEntry->NoDataIdleCount >= pEntry->AssocDeadLine)) {
+		if((pEntry->Sst != SST_ASSOC) && (pEntry->NoDataIdleCount >= pEntry->AssocDeadLine))
+		{
 			DBGPRINT(RT_DEBUG_TRACE, ("%02x:%02x:%02x:%02x:%02x:%02x fail to complete ASSOC in %d sec\n",
 					pEntry->Addr[0],pEntry->Addr[1],pEntry->Addr[2],pEntry->Addr[3],
 					pEntry->Addr[4],pEntry->Addr[5],MAC_TABLE_ASSOC_TIMEOUT));
-#ifdef WSC_AP_SUPPORT
+			#ifdef WSC_AP_SUPPORT
 			if (NdisEqualMemory(pEntry->Addr, pAd->ApCfg.MBSSID[pEntry->apidx].WscControl.EntryAddr, MAC_ADDR_LEN))
 				NdisZeroMemory(pAd->ApCfg.MBSSID[pEntry->apidx].WscControl.EntryAddr, MAC_ADDR_LEN);
-#endif /* WSC_AP_SUPPORT */
+			#endif /* WSC_AP_SUPPORT */
 			MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
 			continue;
 		}
@@ -941,7 +940,7 @@ VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 		if (pEntry->PsMode == PWR_SAVE)
 			pMacTable->fAnyStationInPsm = TRUE;
 
-#ifdef DOT11_N_SUPPORT
+		#ifdef DOT11_N_SUPPORT
 		if (pEntry->MmpsMode == MMPS_DYNAMIC)
 			pMacTable->fAnyStationMIMOPSDynamic = TRUE;
 
@@ -951,29 +950,31 @@ VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 		if (pEntry->MaxHTPhyMode.field.MODE != MODE_HTGREENFIELD)
 			pMacTable->fAnyStationNonGF = TRUE;
 
-		if ((pEntry->MaxHTPhyMode.field.MODE == MODE_OFDM) || (pEntry->MaxHTPhyMode.field.MODE == MODE_CCK))
+		if((pEntry->MaxHTPhyMode.field.MODE == MODE_OFDM) || (pEntry->MaxHTPhyMode.field.MODE == MODE_CCK))
 			pMacTable->fAnyStationIsLegacy = TRUE;
-#ifdef GREENAP_SUPPORT
+		#ifdef GREENAP_SUPPORT
 		else
+    {
 			pMacTable->fAnyStationIsHT = TRUE;
-#endif /* GREENAP_SUPPORT */
+    }
+		#endif /* GREENAP_SUPPORT */
 
-#ifdef DOT11N_DRAFT3
-		if (pEntry->bForty_Mhz_Intolerant)
-			pMacTable->fAnyStaFortyIntolerant = TRUE;
-#endif /* DOT11N_DRAFT3 */
+			#ifdef DOT11N_DRAFT3
+			if (pEntry->bForty_Mhz_Intolerant)
+				pMacTable->fAnyStaFortyIntolerant = TRUE;
+			#endif /* DOT11N_DRAFT3 */
 
 		/* Get minimum AMPDU size from STA */
 		if (MinimumAMPDUSize > pEntry->MaxRAmpduFactor)
 			MinimumAMPDUSize = pEntry->MaxRAmpduFactor;
-#endif /* DOT11_N_SUPPORT */
+		#endif /* DOT11_N_SUPPORT */
 
 		if (pEntry->bIAmBadAtheros) {
 			pMacTable->fAnyStationBadAtheros = TRUE;
-#ifdef DOT11_N_SUPPORT
+			#ifdef DOT11_N_SUPPORT
 			if (pAd->CommonCfg.IOTestParm.bRTSLongProtOn == FALSE)
 				AsicUpdateProtect(pAd, 8, ALLN_SETPROTECT, FALSE, pMacTable->fAnyStationNonGF);
-#endif /* DOT11_N_SUPPORT */
+			#endif /* DOT11_N_SUPPORT */
 		}
 
 		/* detect the station alive status */
@@ -1130,9 +1131,9 @@ VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 		else
 			pEntry->PsQIdleCount = 0;
 
-#ifdef UAPSD_SUPPORT
+		#ifdef UAPSD_SUPPORT
 		UAPSD_QueueMaintenance(pAd, pEntry);
-#endif /* UAPSD_SUPPORT */
+		#endif /* UAPSD_SUPPORT */
 
 		/* check if this STA is Ralink-chipset */
 		if (!CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_RALINK_CHIPSET))
@@ -1141,31 +1142,28 @@ VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 		/* Check if the port is secured */
 		if (pEntry->PortSecured == WPA_802_1X_PORT_SECURED)
 			fAnyStationPortSecured[pEntry->apidx]++;
-#ifdef DOT11_N_SUPPORT
-#ifdef DOT11N_DRAFT3
-		if ((pEntry->BSS2040CoexistenceMgmtSupport)
-			&& (pAd->CommonCfg.Bss2040CoexistFlag & BSS_2040_COEXIST_INFO_NOTIFY)
-			&& (pAd->CommonCfg.bBssCoexEnable == TRUE)
-		)
-			SendNotifyBWActionFrame(pAd, pEntry->Aid, pEntry->apidx);
-#endif /* DOT11N_DRAFT3 */
-#endif /* DOT11_N_SUPPORT */
-#ifdef WAPI_SUPPORT
+		#ifdef DOT11_N_SUPPORT
+		#ifdef DOT11N_DRAFT3
+			if( (pEntry->BSS2040CoexistenceMgmtSupport)
+					&& (pAd->CommonCfg.Bss2040CoexistFlag & BSS_2040_COEXIST_INFO_NOTIFY)
+					&& (pAd->CommonCfg.bBssCoexEnable == TRUE)
+				)
+				SendNotifyBWActionFrame(pAd, pEntry->Aid, pEntry->apidx);
+		#endif /* DOT11N_DRAFT3 */
+		#endif /* DOT11_N_SUPPORT */
+		
+		#ifdef WAPI_SUPPORT
 		if (pEntry->WepStatus == Ndis802_11EncryptionSMS4Enabled)
 			pMacTable->fAnyWapiStation = TRUE;
-#endif /* WAPI_SUPPORT */
-
-#if defined(PRE_ANT_SWITCH) || defined(CFO_TRACK)
-		lastClient = i;
-#endif /* defined(PRE_ANT_SWITCH) || defined(CFO_TRACK) */
+		#endif /* WAPI_SUPPORT */
 
 		/* only apply burst when run in MCS0,1,8,9,16,17, not care about phymode */
 		if ((pEntry->HTPhyMode.field.MCS != 32) &&
 			((pEntry->HTPhyMode.field.MCS % 8 == 0) || (pEntry->HTPhyMode.field.MCS % 8 == 1)))
 			pMacTable->fAllStationGainGoodMCS = FALSE;
-	}
+	} // end for
 
-#ifdef RT8592
+	#ifdef RT8592
 	// TODO: shiang-6590, fix me after chip fix this issue !!
 	if (0)//IS_RT8592(pAd)) {
 		if (pMacTable->Size == 1) {
@@ -1184,14 +1182,7 @@ VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 				bbp_val = 0x132C40C0;
 			RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, bbp_val);
 		}
-	}
-#endif /* RT8592 */
-
-#ifdef PRE_ANT_SWITCH
-#endif /* PRE_ANT_SWITCH */
-
-#ifdef CFO_TRACK
-#endif /* CFO_TRACK */
+	#endif /* RT8592 */
 
 	/* Update the state of port per MBSS */
 	for (bss_index = BSS0; bss_index < MAX_MBSSID_NUM(pAd); bss_index++) {
@@ -1201,11 +1192,11 @@ VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 			pAd->ApCfg.MBSSID[bss_index].PortSecured = WPA_802_1X_PORT_NOT_SECURED;
 	}
 
-#ifdef DOT11_N_SUPPORT
-#ifdef DOT11N_DRAFT3
-	if (pAd->CommonCfg.Bss2040CoexistFlag & BSS_2040_COEXIST_INFO_NOTIFY)
-		pAd->CommonCfg.Bss2040CoexistFlag &= (~BSS_2040_COEXIST_INFO_NOTIFY);
-#endif /* DOT11N_DRAFT3 */
+	#ifdef DOT11_N_SUPPORT
+		#ifdef DOT11N_DRAFT3
+		if (pAd->CommonCfg.Bss2040CoexistFlag & BSS_2040_COEXIST_INFO_NOTIFY)
+			pAd->CommonCfg.Bss2040CoexistFlag &= (~BSS_2040_COEXIST_INFO_NOTIFY);
+		#endif /* DOT11N_DRAFT3 */
 	/* If all associated STAs are Ralink-chipset, AP shall enable RDG. */
 	if (pAd->CommonCfg.bRdg && pMacTable->fAllStationAsRalink)
 		bRdgActive = TRUE;
@@ -1217,23 +1208,25 @@ VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 	else
 		bRalinkBurstMode = FALSE;
 
-#ifdef DOT11_N_SUPPORT
-#ifdef GREENAP_SUPPORT
-	if (WMODE_CAP_N(pAd->CommonCfg.PhyMode)) {
-		if (pAd->MacTab.fAnyStationIsHT == FALSE
-			&& pAd->ApCfg.bGreenAPEnable == TRUE) {
-			if (pAd->ApCfg.GreenAPLevel != GREENAP_ONLY_11BG_STAS) {
-				RTMP_CHIP_ENABLE_AP_MIMOPS(pAd,FALSE);
-				pAd->ApCfg.GreenAPLevel=GREENAP_ONLY_11BG_STAS;
-			}
-		} else {
-			if (pAd->ApCfg.GreenAPLevel != GREENAP_11BGN_STAS) {
-				RTMP_CHIP_DISABLE_AP_MIMOPS(pAd);
-				pAd->ApCfg.GreenAPLevel=GREENAP_11BGN_STAS;
+	#ifdef GREENAP_SUPPORT
+		if (WMODE_CAP_N(pAd->CommonCfg.PhyMode)) 
+		{
+			if (pAd->MacTab.fAnyStationIsHT == FALSE && pAd->ApCfg.bGreenAPEnable == TRUE) 
+			{
+				if (pAd->ApCfg.GreenAPLevel != GREENAP_ONLY_11BG_STAS) {
+					RTMP_CHIP_ENABLE_AP_MIMOPS(pAd,FALSE);
+					pAd->ApCfg.GreenAPLevel=GREENAP_ONLY_11BG_STAS;
+				}
+			} 
+			else 
+			{
+				if (pAd->ApCfg.GreenAPLevel != GREENAP_11BGN_STAS) {
+					RTMP_CHIP_DISABLE_AP_MIMOPS(pAd);
+					pAd->ApCfg.GreenAPLevel=GREENAP_11BGN_STAS;
+				}
 			}
 		}
-	}
-#endif /* GREENAP_SUPPORT */
+	#endif /* GREENAP_SUPPORT */
 
 	if (bRdgActive != RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE)) {
 		if (bRdgActive) {
@@ -1254,8 +1247,6 @@ VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 			AsicDisableRalinkBurstMode(pAd);
 		}
 	}
-#endif /* DOT11_N_SUPPORT */
-
 
 	if ((pMacTable->fAnyStationBadAtheros == FALSE) && (pAd->CommonCfg.IOTestParm.bRTSLongProtOn == TRUE))
 		AsicUpdateProtect(pAd, pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode, ALLN_SETPROTECT, FALSE, pMacTable->fAnyStationNonGF);
@@ -1266,7 +1257,6 @@ VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 	/*    DtimCount==0, the only case to let them stale is surprise removal of the NIC, */
 	/*    so that ASIC-based Tbcn interrupt stops and DtimCount dead. */
 	if (pMacTable->McastPsQueue.Head) {
-		UINT bss_index;
 
 		pMacTable->PsQIdleCount ++;
 		if (pMacTable->PsQIdleCount > 1) {
@@ -2011,9 +2001,7 @@ VOID APOverlappingBSSScan(
 	IN RTMP_ADAPTER *pAd)
 {
 	BOOLEAN needFallBack = FALSE;
-	UCHAR Channel = pAd->CommonCfg.Channel;
 	INT chStartIdx, chEndIdx, index,curPriChIdx, curSecChIdx;
-
 
 	/* We just care BSS who operating in 40MHz N Mode. */
 	if ((!WMODE_CAP_N(pAd->CommonCfg.PhyMode)) ||
@@ -2142,9 +2130,7 @@ VOID APOverlappingBSSScan(
 	pAd->CommonCfg.bOverlapScanning = TRUE;
 	for (index = chStartIdx; index<=chEndIdx; index++)
 	{
-		Channel = pAd->ChannelList[index].Channel;
-
-		AsicSetChannel(pAd, Channel, BW_20,  EXTCHA_NONE, TRUE);
+		AsicSetChannel(pAd, pAd->ChannelList[index].Channel, BW_20,  EXTCHA_NONE, TRUE);
 
 		DBGPRINT(RT_DEBUG_ERROR, ("SYNC - BBP R4 to 20MHz.l\n"));
 		/*DBGPRINT(RT_DEBUG_TRACE, ("Passive scanning for Channel %d.....\n", Channel)); */

@@ -712,8 +712,9 @@ VOID MT7601_WLAN_ChipOnOff(
 
 
 #ifdef RTMP_MAC_USB
-	int RET;
-	if (IS_USB_INF(pAd)) {
+	if (IS_USB_INF(pAd)) 
+	{
+		int RET;
 		RTMP_SEM_EVENT_WAIT(&pAd->hw_atomic, RET);
 		if (RET != 0) {
 			DBGPRINT(RT_DEBUG_ERROR, ("reg_atomic get failed(ret=%d)\n", RET));
@@ -1153,9 +1154,7 @@ static VOID MT7601_ChipSwitchChannel(
 	CHAR CCK1MPwr, CCK11MPwr;
 	UCHAR	index;
 	UCHAR RFValue = 0;
-	UINT32 Value = 0;
-	UINT32	value;
-	UINT32 ret;
+	UINT32 Value = 0;	
 #ifdef SINGLE_SKU_V2
 	CHAR SkuBasePwr;
 	CHAR ChannelPwrAdj;
@@ -1183,7 +1182,6 @@ static VOID MT7601_ChipSwitchChannel(
 	if (pAd->TxPowerCtrl.bInternalTxALC != TRUE)
 #endif /* RTMP_INTERNAL_TX_ALC */
 	{
-		UINT32 value;
 		if (pAd->DefaultTargetPwr > SkuBasePwr)
 			ChannelPwrAdj = SkuBasePwr - pAd->DefaultTargetPwr;
 		else
@@ -1194,9 +1192,9 @@ static VOID MT7601_ChipSwitchChannel(
 		if (ChannelPwrAdj < -32)
 			ChannelPwrAdj = -32;
 
-		RTMP_IO_READ32(pAd, TX_ALC_CFG_1, &value);
-		value = (value & ~0x3F) | (ChannelPwrAdj & 0x3F);
-		RTMP_IO_WRITE32(pAd, TX_ALC_CFG_1, value);
+		RTMP_IO_READ32(pAd, TX_ALC_CFG_1, &Value);
+		Value = (Value & ~0x3F) | (ChannelPwrAdj & 0x3F);
+		RTMP_IO_WRITE32(pAd, TX_ALC_CFG_1, Value);
 		DBGPRINT(RT_DEBUG_TRACE, ("SkuBasePwr = 0x%x, DefaultTargetPwr = 0x%x, ChannelPwrAdj 0x13b4: 0x%x\n", SkuBasePwr, pAd->DefaultTargetPwr, value));
 	}
 
@@ -1212,7 +1210,9 @@ static VOID MT7601_ChipSwitchChannel(
 	TxPwer = pAd->TxPower[Channel - 1].Power;
 
 #ifdef RTMP_MAC_USB
-	if (IS_USB_INF(pAd)) {
+	if (IS_USB_INF(pAd)) 
+	{
+		UINT32 ret;
 		RTMP_SEM_EVENT_WAIT(&pAd->hw_atomic, ret);
 		if (ret != 0) {
 			DBGPRINT(RT_DEBUG_ERROR, ("reg_atomic get failed(ret=%d)\n", ret));
@@ -1310,19 +1310,19 @@ static VOID MT7601_ChipSwitchChannel(
 		RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R4, 0x60);
 		RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R178, 0x0);
 
-		value = pAd->TxCCKPwrCfg;
-		CCK1MPwr = value & 0x3F;
+		Value = pAd->TxCCKPwrCfg;
+		CCK1MPwr = Value & 0x3F;
 		CCK1MPwr -= 2;
 		if (CCK1MPwr < -32)
 			CCK1MPwr = -32;
-		CCK11MPwr = (value & 0x3F00) >> 8;
+		CCK11MPwr = (Value & 0x3F00) >> 8;
 		CCK11MPwr -= 2;
 		if (CCK11MPwr < -32)
 			CCK11MPwr = -32;
 
-		value = (value & ~0xFFFF) | (CCK11MPwr << 8) | CCK1MPwr;
+		Value = (Value & ~0xFFFF) | (CCK11MPwr << 8) | CCK1MPwr;
 
-		pAd->Tx20MPwrCfgGBand[0] = value;
+		pAd->Tx20MPwrCfgGBand[0] = Value;
 	}
 	else
 	{
@@ -1386,7 +1386,7 @@ NTSTATUS MT7601DisableTxRx(
 	*/
 	for (MTxCycle = 0; MTxCycle < MaxRetry; MTxCycle++)
 	{
-		BOOLEAN bFree = TRUE;
+		bFree = TRUE;
 		RTMP_IO_READ32(pAd, 0x438, &MacReg);
 		if (MacReg != 0)
 			bFree = FALSE;
@@ -2367,12 +2367,9 @@ VOID MT7601_InitDesiredTSSITable(
 	IN PRTMP_ADAPTER			pAd)
 {
 	UINT32 Value = 0;
-#ifdef DBG
-	UINT16 offset;
-#endif /* DBG */
+
 	INT32 init_offset;
 	MT7601_TX_ALC_DATA *pTxALCData = &pAd->chipCap.TxALCData;
-
 
 	if (pAd->TxPowerCtrl.bInternalTxALC == FALSE)
 		return;
@@ -2860,7 +2857,7 @@ INT MT7601_Read_Temperature(
 	OUT	CHAR*			Temperature)
 {
 	UCHAR	BBPReg;
-	int i;
+	
 
 #ifdef RTMP_INTERNAL_TX_ALC
 	if ((pAd->chipCap.TxALCData.TssiTriggered == 1) && ( pAd->TxPowerCtrl.bInternalTxALC == TRUE))
@@ -2868,13 +2865,13 @@ INT MT7601_Read_Temperature(
 	else
 #endif /* RTMP_INTERNAL_TX_ALC */
 	{
+		int i=100;		
 		/* BBP R47[4] = 1 */
 		RTMP_BBP_IO_READ8_BY_REG_ID(pAd, BBP_R47, &BBPReg);
 		BBPReg &= (~0x7f);
 		BBPReg |= 0x10;
 		RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R47, BBPReg);
 
-		i = 100;
 		while (i > 0) {
 			RTMP_BBP_IO_READ8_BY_REG_ID(pAd, BBP_R47, &BBPReg);
 			if((BBPReg & 0x10) == 0)

@@ -248,26 +248,26 @@ VOID mix_column(
 /************************************************/
 
 void construct_mic_header1(
-	unsigned char *mic_header1,
+	unsigned char *mic_header,
 	int header_length,
 	unsigned char *mpdu)
 {
-	mic_header1[0] = (unsigned char)((header_length - 2) / 256);
-	mic_header1[1] = (unsigned char)((header_length - 2) % 256);
-	mic_header1[2] = mpdu[0] & 0xcf;    /* Mute CF poll & CF ack bits */
-	mic_header1[3] = mpdu[1] & 0xc7;    /* Mute retry, more data and pwr mgt bits */
-	mic_header1[4] = mpdu[4];       /* A1 */
-	mic_header1[5] = mpdu[5];
-	mic_header1[6] = mpdu[6];
-	mic_header1[7] = mpdu[7];
-	mic_header1[8] = mpdu[8];
-	mic_header1[9] = mpdu[9];
-	mic_header1[10] = mpdu[10];     /* A2 */
-	mic_header1[11] = mpdu[11];
-	mic_header1[12] = mpdu[12];
-	mic_header1[13] = mpdu[13];
-	mic_header1[14] = mpdu[14];
-	mic_header1[15] = mpdu[15];
+	mic_header[0] = (unsigned char)((header_length - 2) / 256);
+	mic_header[1] = (unsigned char)((header_length - 2) % 256);
+	mic_header[2] = mpdu[0] & 0xcf;    /* Mute CF poll & CF ack bits */
+	mic_header[3] = mpdu[1] & 0xc7;    /* Mute retry, more data and pwr mgt bits */
+	mic_header[4] = mpdu[4];       /* A1 */
+	mic_header[5] = mpdu[5];
+	mic_header[6] = mpdu[6];
+	mic_header[7] = mpdu[7];
+	mic_header[8] = mpdu[8];
+	mic_header[9] = mpdu[9];
+	mic_header[10] = mpdu[10];     /* A2 */
+	mic_header[11] = mpdu[11];
+	mic_header[12] = mpdu[12];
+	mic_header[13] = mpdu[13];
+	mic_header[14] = mpdu[14];
+	mic_header[15] = mpdu[15];
 }
 
 /************************************************/
@@ -277,44 +277,44 @@ void construct_mic_header1(
 /************************************************/
 
 void construct_mic_header2(
-	unsigned char *mic_header2,
+	unsigned char *mic_header,
 	unsigned char *mpdu,
 	int a4_exists,
 	int qc_exists)
 {
 	int i;
 
-	for (i = 0; i<16; i++) mic_header2[i]=0x00;
+	for (i = 0; i<16; i++) mic_header[i]=0x00;
 
-	mic_header2[0] = mpdu[16];    /* A3 */
-	mic_header2[1] = mpdu[17];
-	mic_header2[2] = mpdu[18];
-	mic_header2[3] = mpdu[19];
-	mic_header2[4] = mpdu[20];
-	mic_header2[5] = mpdu[21];
+	mic_header[0] = mpdu[16];    /* A3 */
+	mic_header[1] = mpdu[17];
+	mic_header[2] = mpdu[18];
+	mic_header[3] = mpdu[19];
+	mic_header[4] = mpdu[20];
+	mic_header[5] = mpdu[21];
 
 	/* In Sequence Control field, mute sequence numer bits (12-bit) */
-	mic_header2[6] = mpdu[22] & 0x0f;   /* SC */
-	mic_header2[7] = 0x00; /* mpdu[23]; */
+	mic_header[6] = mpdu[22] & 0x0f;   /* SC */
+	mic_header[7] = 0x00; /* mpdu[23]; */
 
 	if ((!qc_exists) & a4_exists)
 	{
-		for (i=0;i<6;i++) mic_header2[8+i] = mpdu[24+i];   /* A4 */
+		for (i=0;i<6;i++) mic_header[8+i] = mpdu[24+i];   /* A4 */
 
 	}
 
 	if (qc_exists && (!a4_exists))
 	{
-		mic_header2[8] = mpdu[24] & 0x0f; /* mute bits 15 - 4 */
-		mic_header2[9] = mpdu[25] & 0x00;
+		mic_header[8] = mpdu[24] & 0x0f; /* mute bits 15 - 4 */
+		mic_header[9] = mpdu[25] & 0x00;
 	}
 
 	if (qc_exists && a4_exists)
 	{
-		for (i=0;i<6;i++) mic_header2[8+i] = mpdu[24+i];   /* A4 */
+		for (i=0;i<6;i++) mic_header[8+i] = mpdu[24+i];   /* A4 */
 
-		mic_header2[14] = mpdu[30] & 0x0f;
-		mic_header2[15] = mpdu[31] & 0x00;
+		mic_header[14] = mpdu[30] & 0x0f;
+		mic_header[15] = mpdu[31] & 0x00;
 	}
 }
 
