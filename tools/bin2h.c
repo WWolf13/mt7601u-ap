@@ -11,7 +11,6 @@ int main(int argc ,char *argv[])
   char *src_dir;
 
   int i=0;
-  unsigned char c;
 
   memset(infname,0,1024);
   memset(outfname,0,1024);
@@ -55,20 +54,15 @@ int main(int argc ,char *argv[])
 
   while(1)
   {
-    char cc[3];
-    c = getc(infile);
+    unsigned char byte = getc(infile);
     if(feof(infile))
 	    break;
-    memset(cc,0,2);
 
     if(i>=16) {
 	    fputs("\n", outfile);
 	    i = 0;
     }
-    fputs("0x", outfile);
-    sprintf(cc,"%02x",c);
-    fputs(cc, outfile);
-    fputs(", ", outfile);
+		fprintf(outfile, "0x%02x, ", byte);    
     i++;
   }
 
