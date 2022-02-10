@@ -39,3 +39,5 @@ os/linux/modules.order
 os/linux/.mt7601Uap.mod*
 os/linux/mt7601Uap.mod
 include/mcu/*
+.*.symvers.cmd
+.*.order.cmd
