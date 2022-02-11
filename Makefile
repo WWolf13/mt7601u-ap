@@ -41,8 +41,12 @@ ifeq ($(RELEASE), DPO)
 	striptool/banner -b striptool/copyright.frm -s DPO_GPL/include/firmware.h
 endif
 
+GARBAGE_FILES := *.o *.symvers *.order *.ko *.mod.c *.mod .*.o.cmd .*.ko.cmd .*.mod.cmd
+DIR_TO_CLEAN  := $(shell find -not -path "./.git**" -type d)
+GARBAGE := $(foreach DIR, $(DIR_TO_CLEAN), $(addprefix $(DIR)/,$(GARBAGE_FILES)))
+
 clean:
-	$(MAKE) -C $(SRC_DIR)/os/linux -f Makefile.6 clean
+	@rm -rf $(GARBAGE)
 
 strip:
 	@$(MAKE) -C $(SRC_DIR)/os/linux strip
