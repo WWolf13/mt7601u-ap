@@ -401,16 +401,10 @@ VOID APStartUp(
 	*/
   #ifdef MT7601U
 	{
-		UINT32 MACValue[128 * 2];
-		UINT32 Index;
-
-		for(Index = 0; Index < 128 * 2; Index+=2)
-    {
-			MACValue[Index] = 0;
-			MACValue[Index + 1] = 0;
-		}
-
-		AndesBurstWrite(pAd, MAC_WCID_BASE, MACValue, 128 * 2);
+    #warning "посмотреть AndesBurstWrite"
+		UINT32 MACValue[256];
+    memset(MACValue,0, sizeof(UINT32)*256);
+		AndesBurstWrite(pAd, MAC_WCID_BASE, MACValue, 256);
 	}
   #else
 	for (i = 0; i < 255; i++)
