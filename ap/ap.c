@@ -401,10 +401,13 @@ VOID APStartUp(
 	*/
   #ifdef MT7601U
 	{
-    #warning "посмотреть AndesBurstWrite"
-		UINT32 MACValue[256];
-    memset(MACValue,0, sizeof(UINT32)*256);
-		AndesBurstWrite(pAd, MAC_WCID_BASE, MACValue, 256);
+    #define array_size 8
+		UINT32 Index, MACValue[array_size];
+    memset(MACValue, 0, sizeof(UINT32)*array_size);
+//    for(Index=0; Index<array_size; Index++)
+//			MACValue[Index] = 0;
+    for(Index=0; Index<256/array_size; Index++)
+      AndesBurstWrite(pAd, MAC_WCID_BASE+Index*array_size, MACValue, array_size);
 	}
   #else
 	for (i = 0; i < 255; i++)
@@ -847,7 +850,7 @@ VOID APCleanupPsQueue(
 */
 VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 	int i;
-	
+
 	#ifdef DOT11_N_SUPPORT
 	ULONG MinimumAMPDUSize = pAd->CommonCfg.DesiredHtPhy.MaxRAmpduFactor; /*Default set minimum AMPDU Size to 2, i.e. 32K */
 	BOOLEAN	bRdgActive;
@@ -884,7 +887,7 @@ VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 	pMacTable->fAnyWapiStation = FALSE;
 	#endif /* WAPI_SUPPORT */
 
-	for (i = 1; i < MAX_LEN_OF_MAC_TABLE; i++) 
+	for (i = 1; i < MAX_LEN_OF_MAC_TABLE; i++)
 	{
 		MAC_TABLE_ENTRY *pEntry = &pMacTable->Content[i];
 		BOOLEAN bDisconnectSta = FALSE;
@@ -1145,7 +1148,7 @@ VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 				SendNotifyBWActionFrame(pAd, pEntry->Aid, pEntry->apidx);
 		#endif /* DOT11N_DRAFT3 */
 		#endif /* DOT11_N_SUPPORT */
-		
+
 		#ifdef WAPI_SUPPORT
 		if (pEntry->WepStatus == Ndis802_11EncryptionSMS4Enabled)
 			pMacTable->fAnyWapiStation = TRUE;
@@ -1203,16 +1206,16 @@ VOID MacTableMaintenance(IN PRTMP_ADAPTER pAd) {
 		bRalinkBurstMode = FALSE;
 
 	#ifdef GREENAP_SUPPORT
-		if (WMODE_CAP_N(pAd->CommonCfg.PhyMode)) 
+		if (WMODE_CAP_N(pAd->CommonCfg.PhyMode))
 		{
-			if (pAd->MacTab.fAnyStationIsHT == FALSE && pAd->ApCfg.bGreenAPEnable == TRUE) 
+			if (pAd->MacTab.fAnyStationIsHT == FALSE && pAd->ApCfg.bGreenAPEnable == TRUE)
 			{
 				if (pAd->ApCfg.GreenAPLevel != GREENAP_ONLY_11BG_STAS) {
 					RTMP_CHIP_ENABLE_AP_MIMOPS(pAd,FALSE);
 					pAd->ApCfg.GreenAPLevel=GREENAP_ONLY_11BG_STAS;
 				}
-			} 
-			else 
+			}
+			else
 			{
 				if (pAd->ApCfg.GreenAPLevel != GREENAP_11BGN_STAS) {
 					RTMP_CHIP_DISABLE_AP_MIMOPS(pAd);
