@@ -401,13 +401,11 @@ VOID APStartUp(
 	*/
   #ifdef MT7601U
 	{
-    #define array_size 8
-		UINT32 Index, MACValue[array_size];
-    memset(MACValue, 0, sizeof(UINT32)*array_size);
-//    for(Index=0; Index<array_size; Index++)
-//			MACValue[Index] = 0;
-    for(Index=0; Index<256/array_size; Index++)
-      AndesBurstWrite(pAd, MAC_WCID_BASE+Index*array_size, MACValue, array_size);
+		UINT32 *MACValue;
+		os_alloc_mem(pAd, (UCHAR **)&MACValue, sizeof(UINT32)*256);
+    memset(MACValue, 0, sizeof(UINT32)*256);
+    AndesBurstWrite(pAd, MAC_WCID_BASE, MACValue, 256);
+    os_free_mem(NULL, MACValue);
 	}
   #else
 	for (i = 0; i < 255; i++)
